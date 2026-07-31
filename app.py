@@ -691,8 +691,8 @@ def create_report_pdf(
         colWidths=[0.8 * cm, 3.2 * cm, 2.5 * cm, 2.4 * cm, 8.0 * cm, 2.0 * cm, 2.7 * cm, 1.2 * cm],
     )
     report_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1E3A8A")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#DCEEFF")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#0F172A")),
         ("FONTNAME", (0, 0), (-1, 0), bold_font),
         ("FONTNAME", (0, 1), (-1, -1), regular_font),
         ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#B8C0CC")),
@@ -706,15 +706,10 @@ def create_report_pdf(
     story.append(Paragraph("Tur Öğrenme Mesajları", heading_style))
     for row in [x for x in history if x["Tur"] > 0]:
         story.append(Paragraph(f"<b>Tur {row['Tur']} — {row['Olay']}</b>", body_style))
-        story.append(Paragraph(f"Karar: {row['Karar']} | Karar gerekçesi: {row['Gerekçe']}", body_style))
-        if row.get("Sonuç Gerekçesi"):
-            story.append(Paragraph(f"Sonuç gerekçesi: {row['Sonuç Gerekçesi']}", body_style))
-        if row.get("Öz Değerlendirme"):
-            story.append(Paragraph(f"Oyuncunun çıkardığı ders: {row['Öz Değerlendirme']}", body_style))
-        if row.get("Puan Değerlendirmesi"):
-            story.append(Paragraph(f"Puan değerlendirmesi: {row['Puan Değerlendirmesi']}", body_style))
-        story.append(Paragraph(f"Temel öğrenme: {row['Öğrenme']}", body_style))
-        story.append(Spacer(1, 7))
+        story.append(Paragraph(f"Karar: {row['Karar']} | Gerekçe: {row['Gerekçe']}", body_style))
+        story.append(Paragraph(f"<b>Kararın değerlendirmesi:</b> {row.get('Puan Değerlendirmesi', 'Değerlendirme bulunmuyor.')}", body_style))
+        story.append(Paragraph(f"<b>Daha uygun yaklaşım:</b> {row['Öğrenme']}", body_style))
+        story.append(Spacer(1, 8))
 
     def add_page_footer(canvas, doc_obj):
         canvas.saveState()
@@ -1201,7 +1196,11 @@ elif st.session_state.page == "results":
         for row in decision_rows:
             st.markdown(f"**Tur {row['Tur']} — {row['Olay']}**")
             st.write(f"Kararınız: {row['Karar']} · Gerekçeniz: {row['Gerekçe']}")
-            st.markdown(f'<div class="lesson-card"><b>Temel öğrenme:</b> {row["Öğrenme"]}</div>', unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="lesson-card"><b>Kararın değerlendirmesi:</b> {row.get("Puan Değerlendirmesi", "Değerlendirme bulunmuyor.")}<br><br>'
+                f'<b>Daha uygun yaklaşım:</b> {row["Öğrenme"]}</div>',
+                unsafe_allow_html=True,
+            )
             st.write("")
 
     pdf_data = create_report_pdf(
