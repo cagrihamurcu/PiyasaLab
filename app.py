@@ -766,7 +766,7 @@ if st.session_state.page == "welcome":
     c2.metric("Şirket", "6")
     c3.metric("Karar turu", str(len(ROUNDS)))
 
-    st.info("Genel sıralama oyun bitene kadar gösterilmez. Başarı yalnızca kazanca değil, karar gerekçelerinin niteliğine de bağlıdır.")
+    st.info("Oyun sonunda portföy performansınız ve karar kaliteniz birlikte değerlendirilecektir. Başarı yalnızca kazanca değil, karar gerekçelerinin niteliğine de bağlıdır.")
     nickname = st.text_input("Oyuncu rumuzunuz", max_chars=24, placeholder="Örn. RiskUstası")
     accept = st.checkbox("Oyunun eğitim amaçlı olduğunu ve gerçek yatırım tavsiyesi içermediğini anlıyorum.")
     if st.button("Oyuna başla", type="primary", use_container_width=True, disabled=not (nickname.strip() and accept)):
