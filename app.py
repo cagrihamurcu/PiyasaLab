@@ -328,6 +328,7 @@ def initialize_state():
         "completed": False,
         "pending_feedback": None,
         "last_round_return": 0.0,
+        "show_countdown": False,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -708,6 +709,24 @@ st.markdown(
     @keyframes fallConfetti {0% {transform: translateY(-20px) rotate(0deg); opacity: 0.95;} 100% {transform: translateY(110vh) rotate(720deg); opacity: 0;}}
     .red-flash-overlay {position: fixed; inset: 0; background: rgba(239,68,68,.32); pointer-events: none; z-index: 998; animation: redBlink 0.75s ease-in-out 2;}
     @keyframes redBlink {0% {opacity: 0;} 20% {opacity: 1;} 50% {opacity: .15;} 80% {opacity: .85;} 100% {opacity: 0;}}
+    .stats-grid {display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin:1rem 0 1.2rem 0;}
+    .stat-tile {padding:1rem; border-radius:16px; background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(241,245,249,.96)); border:1px solid rgba(148,163,184,.25); box-shadow:0 8px 22px rgba(15,23,42,.07); text-align:center;}
+    .stat-icon {font-size:1.55rem; display:block; margin-bottom:.15rem;}
+    .stat-value {font-size:1.3rem; font-weight:800; color:#0f172a;}
+    .stat-label {font-size:.78rem; color:#64748b; margin-top:.12rem;}
+    .ticker {overflow:hidden; white-space:nowrap; border-radius:14px; background:#081226; color:white; padding:.7rem 0; margin:.7rem 0 1rem 0; box-shadow:0 8px 20px rgba(15,23,42,.14);}
+    .ticker-track {display:inline-block; padding-left:100%; animation:tickerMove 18s linear infinite;}
+    .ticker-item {display:inline-block; margin-right:2.2rem; font-weight:700; font-size:.9rem;}
+    .up {color:#4ade80;} .down {color:#f87171;} .flat {color:#facc15;}
+    @keyframes tickerMove {0% {transform:translateX(0);} 100% {transform:translateX(-100%);}}
+    div.stButton > button[kind="primary"] {font-size:1.05rem; font-weight:800; min-height:3.2rem; border-radius:14px; box-shadow:0 0 0 0 rgba(37,99,235,.45); animation:pulseButton 2s infinite;}
+    div.stButton > button[kind="primary"]:hover {transform:translateY(-1px) scale(1.01);}
+    @keyframes pulseButton {0% {box-shadow:0 0 0 0 rgba(37,99,235,.38);} 70% {box-shadow:0 0 0 13px rgba(37,99,235,0);} 100% {box-shadow:0 0 0 0 rgba(37,99,235,0);}}
+    .countdown-screen {position:relative; overflow:hidden; border-radius:24px; padding:3rem 1rem; text-align:center; color:white; background:radial-gradient(circle at 50% 20%, #2563eb, #0f172a 70%); min-height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center;}
+    .countdown-number {font-size:6rem; font-weight:900; line-height:1; animation:countPulse 1s ease-in-out infinite;}
+    .countdown-text {font-size:1.35rem; font-weight:700; margin-top:.65rem;}
+    @keyframes countPulse {0% {transform:scale(.82); opacity:.35;} 50% {transform:scale(1.08); opacity:1;} 100% {transform:scale(.82); opacity:.35;}}
+    @media (max-width: 800px) {.stats-grid {grid-template-columns:repeat(2,1fr);} .welcome-stage h1 {font-size:2.15rem;} .welcome-stage {padding:1.5rem;}}
     </style>
     """,
     unsafe_allow_html=True,
@@ -761,17 +780,53 @@ if st.session_state.page == "welcome":
         """,
         unsafe_allow_html=True,
     )
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Başlangıç sermayesi", "100.000 TL")
-    c2.metric("Şirket", "6")
-    c3.metric("Karar turu", str(len(ROUNDS)))
+    st.markdown(
+        f"""
+        <div class="stats-grid">
+          <div class="stat-tile"><span class="stat-icon">💰</span><div class="stat-value">100.000 TL</div><div class="stat-label">Başlangıç sermayesi</div></div>
+          <div class="stat-tile"><span class="stat-icon">🏢</span><div class="stat-value">6</div><div class="stat-label">Şirket</div></div>
+          <div class="stat-tile"><span class="stat-icon">🎮</span><div class="stat-value">{len(ROUNDS)}</div><div class="stat-label">Karar turu</div></div>
+          <div class="stat-tile"><span class="stat-icon">🏆</span><div class="stat-value">2 ölçüt</div><div class="stat-label">Getiri + karar kalitesi</div></div>
+        </div>
+        <div class="ticker">
+          <div class="ticker-track">
+            <span class="ticker-item">NOVA <span class="up">▲ %3,0</span></span>
+            <span class="ticker-item">GUVEN <span class="down">▼ %1,0</span></span>
+            <span class="ticker-item">YESIL <span class="up">▲ %2,0</span></span>
+            <span class="ticker-item">HIZLI <span class="down">▼ %2,0</span></span>
+            <span class="ticker-item">BRKT <span class="up">▲ %1,0</span></span>
+            <span class="ticker-item">SPLUS <span class="flat">● %0,5</span></span>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    st.info("Oyun sonunda portföy performansınız ve karar kaliteniz birlikte değerlendirilecektir. Başarı yalnızca kazanca değil, karar gerekçelerinin niteliğine de bağlıdır.")
+    st.info("Oyun sonunda portföy performansınız ve karar kaliteniz birlikte değerlendirilecektir.")
+
+    if st.session_state.show_countdown:
+        placeholder = st.empty()
+        import time
+        for number in [3, 2, 1]:
+            placeholder.markdown(
+                f'<div class="countdown-screen"><div class="countdown-number">{number}</div><div class="countdown-text">BorsaLab başlıyor...</div></div>',
+                unsafe_allow_html=True,
+            )
+            time.sleep(0.75)
+        placeholder.markdown(
+            '<div class="countdown-screen"><div class="countdown-number">GO!</div><div class="countdown-text">Karar zamanı</div></div>',
+            unsafe_allow_html=True,
+        )
+        time.sleep(0.65)
+        st.session_state.show_countdown = False
+        st.session_state.page = "companies"
+        st.rerun()
+
     nickname = st.text_input("Oyuncu rumuzunuz", max_chars=24, placeholder="Örn. RiskUstası")
     accept = st.checkbox("Oyunun eğitim amaçlı olduğunu ve gerçek yatırım tavsiyesi içermediğini anlıyorum.")
-    if st.button("Oyuna başla", type="primary", use_container_width=True, disabled=not (nickname.strip() and accept)):
+    if st.button("🚀 Oyunu Başlat", type="primary", use_container_width=True, disabled=not (nickname.strip() and accept)):
         st.session_state.nickname = nickname.strip()
-        st.session_state.page = "companies"
+        st.session_state.show_countdown = True
         st.rerun()
 
 # -----------------------------------------------------------------------------
