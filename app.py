@@ -406,6 +406,31 @@ def render_transition_feedback(feedback: str, round_return: float):
         st.info(f"Tur getirisi nötr gerçekleşti: %{round_return:.2f}")
 
 
+def build_launch_confetti_html() -> str:
+    pieces = []
+    colors = ["#22c55e", "#f59e0b", "#3b82f6", "#ef4444", "#a855f7", "#06b6d4"]
+    for _ in range(26):
+        left = random.randint(3, 97)
+        delay = round(random.uniform(0, 0.7), 2)
+        duration = round(random.uniform(2.5, 4.2), 2)
+        color = random.choice(colors)
+        rotate = random.randint(0, 360)
+        pieces.append(
+            f'<span class="confetti-piece confetti-top" style="left:{left}%; animation-delay:{delay}s; animation-duration:{duration}s; background:{color}; transform: rotate({rotate}deg);"></span>'
+        )
+    for side_class, side_count in [("confetti-left", 14), ("confetti-right", 14)]:
+        for _ in range(side_count):
+            vertical = random.randint(12, 82)
+            delay = round(random.uniform(0, 0.55), 2)
+            duration = round(random.uniform(1.8, 2.8), 2)
+            color = random.choice(colors)
+            rotate = random.randint(0, 360)
+            pieces.append(
+                f'<span class="confetti-piece {side_class}" style="top:{vertical}%; animation-delay:{delay}s; animation-duration:{duration}s; background:{color}; transform: rotate({rotate}deg);"></span>'
+            )
+    return f'<div class="launch-confetti-overlay">{"".join(pieces)}</div>'
+
+
 def execute_decision(action: str, target: str | None, reason: str):
     r_idx = st.session_state.current_round
     prices_before = PRICE_PATH[r_idx]
@@ -707,6 +732,12 @@ st.markdown(
     .confetti-overlay {position: fixed; inset: 0; pointer-events: none; z-index: 999;}
     .confetti-piece {position: fixed; top: -18px; width: 12px; height: 18px; opacity: .9; animation-name: fallConfetti; animation-timing-function: linear; animation-fill-mode: forwards;}
     @keyframes fallConfetti {0% {transform: translateY(-20px) rotate(0deg); opacity: 0.95;} 100% {transform: translateY(110vh) rotate(720deg); opacity: 0;}}
+    .launch-confetti-overlay {position: fixed; inset: 0; pointer-events: none; z-index: 1200;}
+    .confetti-top {animation-name: fallConfetti;}
+    .confetti-left {left: -16px; width: 12px; height: 16px; animation-name: blastLeftConfetti;}
+    .confetti-right {right: -16px; width: 12px; height: 16px; animation-name: blastRightConfetti;}
+    @keyframes blastLeftConfetti {0% {transform: translateX(0) translateY(0) rotate(0deg); opacity: 0.95;} 100% {transform: translateX(92vw) translateY(-28vh) rotate(760deg); opacity: 0;}}
+    @keyframes blastRightConfetti {0% {transform: translateX(0) translateY(0) rotate(0deg); opacity: 0.95;} 100% {transform: translateX(-92vw) translateY(-28vh) rotate(-760deg); opacity: 0;}}
     .red-flash-overlay {position: fixed; inset: 0; background: rgba(239,68,68,.32); pointer-events: none; z-index: 998; animation: redBlink 0.75s ease-in-out 2;}
     @keyframes redBlink {0% {opacity: 0;} 20% {opacity: 1;} 50% {opacity: .15;} 80% {opacity: .85;} 100% {opacity: 0;}}
     .stats-grid {display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; margin:1rem 0 1.2rem 0;}
@@ -813,8 +844,9 @@ if st.session_state.page == "welcome":
                 unsafe_allow_html=True,
             )
             time.sleep(0.75)
+        launch_confetti = build_launch_confetti_html()
         placeholder.markdown(
-            '<div class="countdown-screen"><div class="countdown-number">GO!</div><div class="countdown-text">Karar zamanı</div></div>',
+            f'<div class="countdown-screen"><div class="countdown-number">GO!</div><div class="countdown-text">Karar zamanı</div></div>{launch_confetti}',
             unsafe_allow_html=True,
         )
         time.sleep(0.65)
