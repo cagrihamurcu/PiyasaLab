@@ -753,10 +753,17 @@ st.markdown(
     div.stButton > button[kind="primary"] {font-size:1.05rem; font-weight:800; min-height:3.2rem; border-radius:14px; box-shadow:0 0 0 0 rgba(37,99,235,.45); animation:pulseButton 2s infinite;}
     div.stButton > button[kind="primary"]:hover {transform:translateY(-1px) scale(1.01);}
     @keyframes pulseButton {0% {box-shadow:0 0 0 0 rgba(37,99,235,.38);} 70% {box-shadow:0 0 0 13px rgba(37,99,235,0);} 100% {box-shadow:0 0 0 0 rgba(37,99,235,0);}}
-    .countdown-screen {position:relative; overflow:hidden; border-radius:24px; padding:3rem 1rem; text-align:center; color:white; background:radial-gradient(circle at 50% 20%, #2563eb, #0f172a 70%); min-height:320px; display:flex; flex-direction:column; justify-content:center; align-items:center;}
-    .countdown-number {font-size:6rem; font-weight:900; line-height:1; animation:countPulse 1s ease-in-out infinite;}
-    .countdown-text {font-size:1.35rem; font-weight:700; margin-top:.65rem;}
-    @keyframes countPulse {0% {transform:scale(.82); opacity:.35;} 50% {transform:scale(1.08); opacity:1;} 100% {transform:scale(.82); opacity:.35;}}
+    .countdown-screen {position:relative; overflow:hidden; border-radius:28px; padding:3.3rem 1rem; text-align:center; color:white; background:radial-gradient(circle at 50% 16%, #3b82f6, #0f172a 72%); min-height:360px; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow:0 20px 48px rgba(15,23,42,.30);}
+    .countdown-screen::before {content:''; position:absolute; inset:-20%; background:radial-gradient(circle, rgba(255,255,255,.14), rgba(255,255,255,0) 48%); animation:countGlow 1.8s ease-in-out infinite;}
+    .countdown-number {position:relative; z-index:2; font-size:7rem; font-weight:900; line-height:1; letter-spacing:.03em; text-shadow:0 0 24px rgba(255,255,255,.18); animation:countPulse 1s ease-in-out infinite;}
+    .countdown-text {position:relative; z-index:2; font-size:1.4rem; font-weight:800; margin-top:.75rem;}
+    .countdown-subtext {position:relative; z-index:2; font-size:1rem; opacity:.9; margin-top:.4rem;}
+    .go-burst {animation:goBurst 1.1s ease-in-out infinite; color:#fef08a;}
+    .launch-flash {position:absolute; inset:0; background:radial-gradient(circle, rgba(255,255,255,.26), rgba(255,255,255,0) 55%); animation:launchFlash 1.4s ease-in-out infinite; pointer-events:none; z-index:1;}
+    @keyframes countPulse {0% {transform:scale(.78); opacity:.30;} 50% {transform:scale(1.14); opacity:1;} 100% {transform:scale(.78); opacity:.30;}}
+    @keyframes countGlow {0% {transform:scale(.86); opacity:.25;} 50% {transform:scale(1.08); opacity:.65;} 100% {transform:scale(.86); opacity:.25;}}
+    @keyframes goBurst {0% {transform:scale(.82);} 50% {transform:scale(1.18);} 100% {transform:scale(.82);}}
+    @keyframes launchFlash {0% {opacity:0;} 20% {opacity:.55;} 50% {opacity:.10;} 75% {opacity:.45;} 100% {opacity:0;}}
     @media (max-width: 800px) {.stats-grid {grid-template-columns:repeat(2,1fr);} .welcome-stage h1 {font-size:2.15rem;} .welcome-stage {padding:1.5rem;}}
     </style>
     """,
@@ -840,16 +847,16 @@ if st.session_state.page == "welcome":
         import time
         for number in [3, 2, 1]:
             placeholder.markdown(
-                f'<div class="countdown-screen"><div class="countdown-number">{number}</div><div class="countdown-text">BorsaLab başlıyor...</div></div>',
+                f'<div class="countdown-screen"><div class="countdown-number">{number}</div><div class="countdown-text">BorsaLab başlıyor...</div><div class="countdown-subtext">Piyasayı oku · Karar ver · Sonucunu gör</div></div>',
                 unsafe_allow_html=True,
             )
-            time.sleep(0.75)
+            time.sleep(0.95)
         launch_confetti = build_launch_confetti_html()
         placeholder.markdown(
-            f'<div class="countdown-screen"><div class="countdown-number">GO!</div><div class="countdown-text">Karar zamanı</div></div>{launch_confetti}',
+            f'<div class="countdown-screen"><div class="launch-flash"></div><div class="countdown-number go-burst">GO!</div><div class="countdown-text">Karar zamanı</div><div class="countdown-subtext">Piyasalar açılıyor...</div></div>{launch_confetti}',
             unsafe_allow_html=True,
         )
-        time.sleep(0.65)
+        time.sleep(1.9)
         st.session_state.show_countdown = False
         st.session_state.page = "companies"
         st.rerun()
