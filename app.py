@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
+from pathlib import Path
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4, landscape
@@ -282,6 +283,19 @@ ACTION_REASONS = {
         "Yeni hisse sosyal medyada popüler olduğu için hemen geçmek istiyorum.",
         "Son dönemde en çok yükselen hisse olduğu için yükselmeye devam edeceğini düşünüyorum.",
     ],
+    "Nakitte kal": [
+        "Piyasa koşulları ve şirket haberleri yeterince net olmadığı için nakitte bekliyorum.",
+        "Doğrulanmış ve güçlü bir yatırım fırsatı görmediğim için risk almıyorum.",
+        "Yeni bilgiler açıklanana kadar sermayemi korumayı tercih ediyorum.",
+        "Fiyatların düşeceğini düşündüğüm için hiçbir şirketi değerlendirmeden nakitte kalıyorum.",
+    ],
+    "Hisse al": [
+        "Seçtiğim şirketin haberi, temel göstergeleri ve risk-getiri görünümü uygun görünüyor.",
+        "Şirketleri karşılaştırdım ve doğrulanmış bilgiye dayalı en güçlü seçeneği belirledim.",
+        "Nakitte beklemek yerine analizime göre uygun gördüğüm şirkete yatırım yapıyorum.",
+        "Yeni hisse sosyal medyada popüler olduğu için hemen almak istiyorum.",
+        "Son dönemde en çok yükselen hisse olduğu için yükselmeye devam edeceğini düşünüyorum.",
+    ],
 }
 
 ALL_REASONS = [
@@ -356,20 +370,20 @@ def execute_decision(action: str, target: str | None, reason: str):
     old_holding = st.session_state.holding
 
     # Karar mevcut fiyatlarla uygulanır; daha sonra turun fiyat değişimi gerçekleşir.
-    if action == "Sat ve nakitte kal":
+    if action in ["Sat ve nakitte kal", "Nakitte kal"]:
         if st.session_state.holding:
             st.session_state.cash += st.session_state.shares * prices_before[st.session_state.holding]
         st.session_state.holding = None
         st.session_state.shares = 0.0
 
-    elif action == "Sat ve başka hisse al":
+    elif action in ["Sat ve başka hisse al", "Hisse al"]:
         if st.session_state.holding:
             st.session_state.cash += st.session_state.shares * prices_before[st.session_state.holding]
         st.session_state.holding = target
         st.session_state.shares = st.session_state.cash / prices_before[target]
         st.session_state.cash = 0.0
 
-    # "Tut" işleminde portföy değiştirilmez.
+    # "Tut" veya "Nakitte kal" işleminde portföy yapısı değiştirilmez.
     new_price_index = r_idx + 1
     value_after = portfolio_value(new_price_index)
     round_return = (value_after / value_before - 1) * 100 if value_before else 0
@@ -412,21 +426,36 @@ def create_report_pdf(
     """Oyun sonu karar karnesini PDF olarak üretir."""
     buffer = BytesIO()
 
-    regular_font = "Helvetica"
-    bold_font = "Helvetica-Bold"
+    # Türkçe karakterler için PDF içine gömülebilen bir TrueType yazı tipi kullanılır.
+    # Helvetica Türkçe karakterlerin tamamını desteklemediği için sessiz geri dönüş yapılmaz.
     font_candidates = [
         ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
+        ("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf", "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf"),
+        ("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf", "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf"),
         ("/usr/share/fonts/dejavu/DejaVuSans.ttf", "/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf"),
     ]
-    for regular_path, bold_path in font_candidates:
-        try:
-            pdfmetrics.registerFont(TTFont("BorsaLabRegular", regular_path))
-            pdfmetrics.registerFont(TTFont("BorsaLabBold", bold_path))
-            regular_font = "BorsaLabRegular"
-            bold_font = "BorsaLabBold"
+
+    regular_path = bold_path = None
+    for regular_candidate, bold_candidate in font_candidates:
+        if Path(regular_candidate).is_file() and Path(bold_candidate).is_file():
+            regular_path, bold_path = regular_candidate, bold_candidate
             break
-        except Exception:
-            continue
+
+    if regular_path is None or bold_path is None:
+        raise RuntimeError(
+            "PDF oluşturulamadı: Türkçe karakterleri destekleyen DejaVu Sans, "
+            "Noto Sans veya Liberation Sans yazı tipi bulunamadı."
+        )
+
+    # Streamlit her yeniden çalıştığında aynı fontu tekrar kaydetmeye çalışmamak için kontrol edilir.
+    registered_fonts = set(pdfmetrics.getRegisteredFontNames())
+    if "BorsaLabRegular" not in registered_fonts:
+        pdfmetrics.registerFont(TTFont("BorsaLabRegular", regular_path, subfontIndex=0))
+    if "BorsaLabBold" not in registered_fonts:
+        pdfmetrics.registerFont(TTFont("BorsaLabBold", bold_path, subfontIndex=0))
+
+    regular_font = "BorsaLabRegular"
+    bold_font = "BorsaLabBold"
 
     doc = SimpleDocTemplate(
         buffer,
@@ -532,8 +561,8 @@ def create_report_pdf(
 
     def add_page_footer(canvas, doc_obj):
         canvas.saveState()
-        canvas.setFont(regular_font, 7.5)
-        canvas.drawString(1.2 * cm, 0.65 * cm, "Çağrı Hamurcu tarafından yapılmıştır.")
+        canvas.setFont(regular_font, 6.5)
+        canvas.drawString(1.2 * cm, 0.65 * cm, "Bu uygulama Çağrı Hamurcu tarafından yapılmıştır.")
         canvas.drawRightString(landscape(A4)[0] - 1.2 * cm, 0.65 * cm, f"Sayfa {doc_obj.page}")
         canvas.restoreState()
 
@@ -595,7 +624,7 @@ st.markdown(
     .lesson-card {border-left: 6px solid #10b981; padding: 1rem 1.2rem; border-radius: 12px; background: rgba(16,185,129,.10);}
     .metric-box {border-radius: 14px; padding: .7rem; border: 1px solid rgba(128,128,128,.22);}
     div[data-testid="stRadio"] label {padding: .25rem 0;}
-    .app-footer {text-align:center; opacity:.72; font-size:.85rem; padding-top:1.5rem;}
+    .app-footer {text-align:center; opacity:.68; font-size:.70rem; padding-top:1.5rem;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -778,11 +807,18 @@ elif st.session_state.page == "game":
         st.dataframe(df_prices, hide_index=True, use_container_width=True)
 
     st.markdown("### Kararınız")
-    action = st.radio("Ne yapacaksınız?", ["Tut", "Sat ve nakitte kal", "Sat ve başka hisse al"], horizontal=True)
+    # Karar seçenekleri öğrencinin o anda hisse mi yoksa nakit mi tuttuğuna göre değişir.
+    if st.session_state.holding:
+        action_options = ["Tut", "Sat ve nakitte kal", "Sat ve başka hisse al"]
+    else:
+        action_options = ["Nakitte kal", "Hisse al"]
+
+    action = st.radio("Ne yapacaksınız?", action_options, horizontal=True)
     target = None
-    if action == "Sat ve başka hisse al":
+    if action in ["Sat ve başka hisse al", "Hisse al"]:
         options = [x for x in COMPANIES if x != st.session_state.holding]
-        target = st.selectbox("Hangi hisseye geçeceksiniz?", options, index=None, placeholder="Yeni hisseyi seçin")
+        target_label = "Hangi hisseyi alacaksınız?" if action == "Hisse al" else "Hangi hisseye geçeceksiniz?"
+        target = st.selectbox(target_label, options, index=None, placeholder="Bir hisse seçin")
 
     # Gerekçe seçenekleri verilen kararın türüne göre değişir.
     round_reasons = ACTION_REASONS[action] + r["good_reasons"] + r["risk_reasons"]
@@ -795,7 +831,7 @@ elif st.session_state.page == "game":
         key=f"reason_{r_idx}_{action}",
     )
 
-    disabled = reason is None or (action == "Sat ve başka hisse al" and target is None)
+    disabled = reason is None or (action in ["Sat ve başka hisse al", "Hisse al"] and target is None)
     if st.button("Kararı uygula ve turu tamamla", type="primary", use_container_width=True, disabled=disabled):
         execute_decision(action, target, reason)
 
@@ -888,6 +924,6 @@ elif st.session_state.page == "results":
 
 
 st.markdown(
-    '<div class="app-footer">Çağrı Hamurcu tarafından yapılmıştır.</div>',
+    '<div class="app-footer">Bu uygulama Çağrı Hamurcu tarafından yapılmıştır.</div>',
     unsafe_allow_html=True,
 )
