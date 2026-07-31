@@ -422,7 +422,7 @@ def conscious_score_evaluation(score: float) -> str:
     return "Kararlar ve sonuçlar birlikte değerlendirildiğinde gelişime ihtiyaç var."
 
 
-def render_transition_feedback(feedback: str, round_return: float):
+def render_transition_feedback(feedback: str, round_return: float, explanation: str = ""):
     if feedback == "profit":
         st.balloons()
         pieces = []
@@ -441,6 +441,7 @@ def render_transition_feedback(feedback: str, round_return: float):
             <div class="transition-box profit-box">
                 <div class="transition-title">Tebrikler! Bu turu kârla kapattınız.</div>
                 <div class="transition-subtitle">Tur getirisi: %{round_return:.2f}</div>
+                <div class="transition-explanation"><b>Değerlendirme:</b> {explanation}</div>
             </div>
             <div class="confetti-overlay">{''.join(pieces)}</div>
             """,
@@ -452,13 +453,14 @@ def render_transition_feedback(feedback: str, round_return: float):
             <div class="transition-box loss-box">
                 <div class="transition-title">Bu tur zarar oluştu.</div>
                 <div class="transition-subtitle">Tur getirisi: %{round_return:.2f}</div>
+                <div class="transition-explanation"><b>Değerlendirme:</b> {explanation}</div>
             </div>
             <div class="red-flash-overlay"></div>
             """,
             unsafe_allow_html=True,
         )
     elif feedback == "neutral":
-        st.info(f"Tur getirisi nötr gerçekleşti: %{round_return:.2f}")
+        st.info(f"Tur getirisi nötr gerçekleşti: %{round_return:.2f} — {explanation}")
 
 
 def build_launch_confetti_html() -> str:
@@ -802,6 +804,7 @@ st.markdown(
     .loss-box {background: linear-gradient(90deg, rgba(239,68,68,.18), rgba(248,113,113,.08)); border-left: 6px solid #ef4444;}
     .transition-title {font-size: 1.15rem; font-weight: 700; margin-bottom: .15rem;}
     .transition-subtitle {font-size: .95rem; opacity: .9;}
+    .transition-explanation {font-size:.92rem; margin-top:.45rem; line-height:1.35;}
     .confetti-overlay {position: fixed; inset: 0; pointer-events: none; z-index: 999;}
     .confetti-piece {position: fixed; top: -18px; width: 12px; height: 18px; opacity: .9; animation-name: fallConfetti; animation-timing-function: linear; animation-fill-mode: forwards;}
     @keyframes fallConfetti {0% {transform: translateY(-20px) rotate(0deg); opacity: 0.95;} 100% {transform: translateY(110vh) rotate(720deg); opacity: 0;}}
@@ -1020,7 +1023,12 @@ elif st.session_state.page == "game":
 
     pending_feedback = st.session_state.get("pending_feedback")
     if pending_feedback:
-        render_transition_feedback(pending_feedback, st.session_state.get("last_round_return", 0.0))
+        latest_explanation = st.session_state.history[-1].get("Puan Değerlendirmesi", "") if st.session_state.history else ""
+        render_transition_feedback(
+            pending_feedback,
+            st.session_state.get("last_round_return", 0.0),
+            latest_explanation,
+        )
         st.session_state.pending_feedback = None
 
     st.caption(f"TUR {r_idx + 1} / {len(ROUNDS)}")
@@ -1126,7 +1134,12 @@ elif st.session_state.page == "game":
 elif st.session_state.page == "results":
     pending_feedback = st.session_state.get("pending_feedback")
     if pending_feedback:
-        render_transition_feedback(pending_feedback, st.session_state.get("last_round_return", 0.0))
+        latest_explanation = st.session_state.history[-1].get("Puan Değerlendirmesi", "") if st.session_state.history else ""
+        render_transition_feedback(
+            pending_feedback,
+            st.session_state.get("last_round_return", 0.0),
+            latest_explanation,
+        )
         st.session_state.pending_feedback = None
 
     final_value = portfolio_value(len(PRICE_PATH) - 1)
