@@ -787,7 +787,6 @@ elif st.session_state.page == "companies":
         for col, name in zip(cols, names[row_start:row_start + 3]):
             c = COMPANIES[name]
             with col:
-                st.markdown('<div class="company-card">', unsafe_allow_html=True)
                 st.subheader(f"{c['icon']} {name}")
                 st.caption(f"{c['symbol']} · {c['sector']}")
                 st.write(c["description"])
@@ -796,7 +795,6 @@ elif st.session_state.page == "companies":
                 st.write(f"**Borçluluk:** {c['debt']}")
                 st.write(f"**Son 1 yıl:** {c['year_change']}")
                 st.write(f"**Başlangıç fiyatı:** {INITIAL_PRICE:.0f} TL")
-                st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("### İlk yatırım kararınız")
     selected = st.selectbox("Sermayenizin tamamını hangi hisseye yatıracaksınız?", names, index=None, placeholder="Bir şirket seçin")
@@ -811,6 +809,16 @@ elif st.session_state.page == "companies":
         st.session_state.holding = selected
         st.session_state.shares = STARTING_CASH / INITIAL_PRICE
         st.session_state.cash = 0.0
+
+        initial_round_return = ((PRICE_PATH[0][selected] / INITIAL_PRICE) - 1) * 100
+        st.session_state.last_round_return = initial_round_return
+        if initial_round_return > 0.001:
+            st.session_state.pending_feedback = "profit"
+        elif initial_round_return < -0.001:
+            st.session_state.pending_feedback = "loss"
+        else:
+            st.session_state.pending_feedback = "neutral"
+
         st.session_state.history.append(
             {
                 "Tur": 0,
