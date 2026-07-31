@@ -1,5 +1,14 @@
 import streamlit as st
 import pandas as pd
+from io import BytesIO
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 
 st.set_page_config(
     page_title="BorsaLab",
@@ -390,6 +399,148 @@ def execute_decision(action: str, target: str | None, reason: str):
     st.rerun()
 
 
+def create_report_pdf(
+    nickname: str,
+    final_value: float,
+    total_return: float,
+    avg_decision: float,
+    total_score: float,
+    profile_items: list[str],
+    profile_title: str,
+    history: list[dict],
+) -> bytes:
+    """Oyun sonu karar karnesini PDF olarak üretir."""
+    buffer = BytesIO()
+
+    regular_font = "Helvetica"
+    bold_font = "Helvetica-Bold"
+    font_candidates = [
+        ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
+        ("/usr/share/fonts/dejavu/DejaVuSans.ttf", "/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf"),
+    ]
+    for regular_path, bold_path in font_candidates:
+        try:
+            pdfmetrics.registerFont(TTFont("BorsaLabRegular", regular_path))
+            pdfmetrics.registerFont(TTFont("BorsaLabBold", bold_path))
+            regular_font = "BorsaLabRegular"
+            bold_font = "BorsaLabBold"
+            break
+        except Exception:
+            continue
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=landscape(A4),
+        rightMargin=1.2 * cm,
+        leftMargin=1.2 * cm,
+        topMargin=1.2 * cm,
+        bottomMargin=1.4 * cm,
+        title=f"BorsaLab Karar Karnesi - {nickname}",
+        author="Çağrı Hamurcu",
+    )
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        "BorsaLabTitle", parent=styles["Title"], fontName=bold_font, fontSize=20,
+        leading=24, alignment=TA_CENTER, spaceAfter=12
+    )
+    heading_style = ParagraphStyle(
+        "BorsaLabHeading", parent=styles["Heading2"], fontName=bold_font, fontSize=12,
+        leading=15, spaceBefore=8, spaceAfter=6
+    )
+    body_style = ParagraphStyle(
+        "BorsaLabBody", parent=styles["BodyText"], fontName=regular_font, fontSize=8.5,
+        leading=11, alignment=TA_LEFT
+    )
+    small_style = ParagraphStyle(
+        "BorsaLabSmall", parent=body_style, fontSize=7, leading=9
+    )
+    center_style = ParagraphStyle(
+        "BorsaLabCenter", parent=body_style, alignment=TA_CENTER
+    )
+
+    story = [
+        Paragraph("BorsaLab Karar Karnesi", title_style),
+        Paragraph(f"Oyuncu: <b>{nickname}</b>", center_style),
+        Spacer(1, 8),
+    ]
+
+    summary_data = [
+        [Paragraph("Final Portföy", small_style), Paragraph("Toplam Getiri", small_style),
+         Paragraph("Karar Kalitesi", small_style), Paragraph("Bilinçli Yatırımcı Puanı", small_style)],
+        [Paragraph(fmt_money(final_value), body_style), Paragraph(f"%{total_return:.2f}", body_style),
+         Paragraph(f"{avg_decision:.1f}/10", body_style), Paragraph(f"{total_score:.1f}/100", body_style)],
+    ]
+    summary_table = Table(summary_data, colWidths=[6.3 * cm] * 4)
+    summary_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E8EEF8")),
+        ("FONTNAME", (0, 0), (-1, 0), bold_font),
+        ("FONTNAME", (0, 1), (-1, 1), regular_font),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#AAB4C3")),
+        ("TOPPADDING", (0, 0), (-1, -1), 7),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+    ]))
+    story.extend([summary_table, Spacer(1, 10)])
+
+    story.append(Paragraph("Yatırımcı Profili", heading_style))
+    story.append(Paragraph(f"<b>{profile_title}</b>", body_style))
+    for item in profile_items:
+        story.append(Paragraph(f"• {item}", body_style))
+    story.append(Spacer(1, 8))
+
+    story.append(Paragraph("Tur Bazında Karar Karnesi", heading_style))
+    headers = ["Tur", "Olay", "Karar", "Yeni Varlık", "Gerekçe", "Tur Getirisi", "Portföy", "Puan"]
+    table_data = [[Paragraph(h, small_style) for h in headers]]
+    for row in history:
+        table_data.append([
+            Paragraph(str(row["Tur"]), small_style),
+            Paragraph(str(row["Olay"]), small_style),
+            Paragraph(str(row["Karar"]), small_style),
+            Paragraph(str(row["Yeni Varlık"]), small_style),
+            Paragraph(str(row["Gerekçe"]), small_style),
+            Paragraph(f"%{row['Tur Getirisi (%)']:.2f}", small_style),
+            Paragraph(fmt_money(float(row["Portföy Değeri"])), small_style),
+            Paragraph(str(row["Karar Puanı"]), small_style),
+        ])
+
+    report_table = Table(
+        table_data,
+        repeatRows=1,
+        colWidths=[0.8 * cm, 3.2 * cm, 2.5 * cm, 2.4 * cm, 8.0 * cm, 2.0 * cm, 2.7 * cm, 1.2 * cm],
+    )
+    report_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1E3A8A")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), bold_font),
+        ("FONTNAME", (0, 1), (-1, -1), regular_font),
+        ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#B8C0CC")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F6F8FB")]),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    story.append(report_table)
+    story.append(PageBreak())
+    story.append(Paragraph("Tur Öğrenme Mesajları", heading_style))
+    for row in [x for x in history if x["Tur"] > 0]:
+        story.append(Paragraph(f"<b>Tur {row['Tur']} — {row['Olay']}</b>", body_style))
+        story.append(Paragraph(f"Karar: {row['Karar']} | Gerekçe: {row['Gerekçe']}", body_style))
+        story.append(Paragraph(f"Temel öğrenme: {row['Öğrenme']}", body_style))
+        story.append(Spacer(1, 7))
+
+    def add_page_footer(canvas, doc_obj):
+        canvas.saveState()
+        canvas.setFont(regular_font, 7.5)
+        canvas.drawString(1.2 * cm, 0.65 * cm, "Çağrı Hamurcu tarafından yapılmıştır.")
+        canvas.drawRightString(landscape(A4)[0] - 1.2 * cm, 0.65 * cm, f"Sayfa {doc_obj.page}")
+        canvas.restoreState()
+
+    doc.build(story, onFirstPage=add_page_footer, onLaterPages=add_page_footer)
+    return buffer.getvalue()
+
+
 def investor_profile(history: list[dict]) -> list[str]:
     if not history:
         return ["Yatırımcı profili oluşturmak için oyun kararları gereklidir."]
@@ -444,6 +595,7 @@ st.markdown(
     .lesson-card {border-left: 6px solid #10b981; padding: 1rem 1.2rem; border-radius: 12px; background: rgba(16,185,129,.10);}
     .metric-box {border-radius: 14px; padding: .7rem; border: 1px solid rgba(128,128,128,.22);}
     div[data-testid="stRadio"] label {padding: .25rem 0;}
+    .app-footer {text-align:center; opacity:.72; font-size:.85rem; padding-top:1.5rem;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -687,13 +839,17 @@ elif st.session_state.page == "results":
         st.write(f"• {item}")
 
     if total_score >= 80:
-        st.success("🏆 Profil: Bilinçli Risk Yöneticisi")
+        profile_title = "Bilinçli Risk Yöneticisi"
+        st.success(f"🏆 Profil: {profile_title}")
     elif total_score >= 65:
-        st.info("🥈 Profil: Analitik Yatırımcı")
+        profile_title = "Analitik Yatırımcı"
+        st.info(f"🥈 Profil: {profile_title}")
     elif total_score >= 50:
-        st.warning("🥉 Profil: Gelişen Yatırımcı")
+        profile_title = "Gelişen Yatırımcı"
+        st.warning(f"🥉 Profil: {profile_title}")
     else:
-        st.error("🎯 Profil: Hızlı Karar Veren Yatırımcı — haber ayrıntısı ve kaynak kontrolüne daha fazla ağırlık vermelisiniz.")
+        profile_title = "Hızlı Karar Veren Yatırımcı"
+        st.error(f"🎯 Profil: {profile_title} — haber ayrıntısı ve kaynak kontrolüne daha fazla ağırlık vermelisiniz.")
 
     st.markdown("### Tur bazında karar karnesi")
     history_df = pd.DataFrame(st.session_state.history)
@@ -707,15 +863,31 @@ elif st.session_state.page == "results":
             st.markdown(f'<div class="lesson-card"><b>Temel öğrenme:</b> {row["Öğrenme"]}</div>', unsafe_allow_html=True)
             st.write("")
 
-    csv = history_df.to_csv(index=False).encode("utf-8-sig")
+    pdf_data = create_report_pdf(
+        nickname=st.session_state.nickname,
+        final_value=final_value,
+        total_return=total_return,
+        avg_decision=avg_decision,
+        total_score=total_score,
+        profile_items=investor_profile(decision_rows),
+        profile_title=profile_title,
+        history=st.session_state.history,
+    )
+    safe_nickname = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in st.session_state.nickname)
     st.download_button(
-        "📥 Karar karnesini CSV olarak indir",
-        data=csv,
-        file_name=f"borsalab_{st.session_state.nickname}.csv",
-        mime="text/csv",
+        "📄 Karar karnesini PDF olarak indir",
+        data=pdf_data,
+        file_name=f"BorsaLab_Karar_Karnesi_{safe_nickname}.pdf",
+        mime="application/pdf",
         use_container_width=True,
     )
 
     st.markdown("---")
     st.subheader("Ana mesaj")
     st.write("Borsa yalnızca doğru hisseyi bulma oyunu değildir. Bilgiyi sorgulama, riski yönetme ve duyguları kontrol etme sürecidir.")
+
+
+st.markdown(
+    '<div class="app-footer">Çağrı Hamurcu tarafından yapılmıştır.</div>',
+    unsafe_allow_html=True,
+)
