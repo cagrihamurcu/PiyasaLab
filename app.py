@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
+import random
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4, landscape
@@ -324,6 +325,8 @@ def initialize_state():
         "initial_company": None,
         "show_detail": False,
         "completed": False,
+        "pending_feedback": None,
+        "last_round_return": 0.0,
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -360,6 +363,45 @@ def reason_quality(reason: str, round_data: dict) -> int:
         return 0
     positive_words = ["ayrıntı", "risk", "temel", "resmî", "güvenilir", "piyasa", "mali"]
     return 7 if any(word in reason.lower() for word in positive_words) else 3
+
+
+def render_transition_feedback(feedback: str, round_return: float):
+    if feedback == "profit":
+        st.balloons()
+        pieces = []
+        colors = ["#22c55e", "#f59e0b", "#3b82f6", "#ef4444", "#a855f7"]
+        for i in range(24):
+            left = random.randint(2, 96)
+            delay = round(random.uniform(0, 1.2), 2)
+            duration = round(random.uniform(2.8, 4.8), 2)
+            color = random.choice(colors)
+            rotate = random.randint(0, 360)
+            pieces.append(
+                f'<span class="confetti-piece" style="left:{left}%; animation-delay:{delay}s; animation-duration:{duration}s; background:{color}; transform: rotate({rotate}deg);"></span>'
+            )
+        st.markdown(
+            f"""
+            <div class="transition-box profit-box">
+                <div class="transition-title">Tebrikler! Bu turu kârla kapattınız.</div>
+                <div class="transition-subtitle">Tur getirisi: %{round_return:.2f}</div>
+            </div>
+            <div class="confetti-overlay">{''.join(pieces)}</div>
+            """,
+            unsafe_allow_html=True,
+        )
+    elif feedback == "loss":
+        st.markdown(
+            f"""
+            <div class="transition-box loss-box">
+                <div class="transition-title">Bu tur zarar oluştu.</div>
+                <div class="transition-subtitle">Tur getirisi: %{round_return:.2f}</div>
+            </div>
+            <div class="red-flash-overlay"></div>
+            """,
+            unsafe_allow_html=True,
+        )
+    elif feedback == "neutral":
+        st.info(f"Tur getirisi nötr gerçekleşti: %{round_return:.2f}")
 
 
 def execute_decision(action: str, target: str | None, reason: str):
@@ -404,6 +446,14 @@ def execute_decision(action: str, target: str | None, reason: str):
             "Öğrenme": round_data["lesson"],
         }
     )
+
+    st.session_state.last_round_return = round_return
+    if round_return > 0.001:
+        st.session_state.pending_feedback = "profit"
+    elif round_return < -0.001:
+        st.session_state.pending_feedback = "loss"
+    else:
+        st.session_state.pending_feedback = "neutral"
 
     st.session_state.current_round += 1
     st.session_state.show_detail = False
@@ -625,6 +675,16 @@ st.markdown(
     .metric-box {border-radius: 14px; padding: .7rem; border: 1px solid rgba(128,128,128,.22);}
     div[data-testid="stRadio"] label {padding: .25rem 0;}
     .app-footer {text-align:center; opacity:.68; font-size:.70rem; padding-top:1.5rem;}
+    .transition-box {position: relative; z-index: 1001; border-radius: 16px; padding: 1rem 1.2rem; margin: .4rem 0 1rem 0; border: 1px solid rgba(0,0,0,.08); box-shadow: 0 8px 24px rgba(0,0,0,.08);}
+    .profit-box {background: linear-gradient(90deg, rgba(34,197,94,.16), rgba(59,130,246,.10)); border-left: 6px solid #22c55e;}
+    .loss-box {background: linear-gradient(90deg, rgba(239,68,68,.18), rgba(248,113,113,.08)); border-left: 6px solid #ef4444;}
+    .transition-title {font-size: 1.15rem; font-weight: 700; margin-bottom: .15rem;}
+    .transition-subtitle {font-size: .95rem; opacity: .9;}
+    .confetti-overlay {position: fixed; inset: 0; pointer-events: none; z-index: 999;}
+    .confetti-piece {position: fixed; top: -18px; width: 12px; height: 18px; opacity: .9; animation-name: fallConfetti; animation-timing-function: linear; animation-fill-mode: forwards;}
+    @keyframes fallConfetti {0% {transform: translateY(-20px) rotate(0deg); opacity: 0.95;} 100% {transform: translateY(110vh) rotate(720deg); opacity: 0;}}
+    .red-flash-overlay {position: fixed; inset: 0; background: rgba(239,68,68,.32); pointer-events: none; z-index: 998; animation: redBlink 0.75s ease-in-out 2;}
+    @keyframes redBlink {0% {opacity: 0;} 20% {opacity: 1;} 50% {opacity: .15;} 80% {opacity: .85;} 100% {opacity: 0;}}
     </style>
     """,
     unsafe_allow_html=True,
@@ -738,6 +798,12 @@ elif st.session_state.page == "game":
     r = ROUNDS[r_idx]
     prices = current_prices()
 
+    pending_feedback = st.session_state.get("pending_feedback")
+    pending_return = st.session_state.get("last_round_return", 0.0)
+    if pending_feedback:
+        render_transition_feedback(pending_feedback, pending_return)
+        st.session_state.pending_feedback = None
+
     st.caption(f"TUR {r_idx + 1} / {len(ROUNDS)}")
     st.title(f"Tur {r_idx + 1} Piyasa Bulteni")
 
@@ -839,6 +905,12 @@ elif st.session_state.page == "game":
 # SONUÇLAR
 # -----------------------------------------------------------------------------
 elif st.session_state.page == "results":
+    pending_feedback = st.session_state.get("pending_feedback")
+    pending_return = st.session_state.get("last_round_return", 0.0)
+    if pending_feedback:
+        render_transition_feedback(pending_feedback, pending_return)
+        st.session_state.pending_feedback = None
+
     final_value = portfolio_value(len(PRICE_PATH) - 1)
     total_return = (final_value / STARTING_CASH - 1) * 100
     decision_rows = [x for x in st.session_state.history if x["Tur"] > 0]
