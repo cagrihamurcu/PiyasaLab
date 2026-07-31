@@ -430,14 +430,14 @@ if st.session_state.page == "welcome":
         """
         <div class="hero">
           <h1>Şans mı, Strateji mi?</h1>
-          <p>100.000 TL sanal sermayeyle altı hayalî şirket arasından seçim yapın. Haberleri değerlendirin, karar verin ve yatırımcı profilinizi keşfedin.</p>
+          <p>100.000 TL sanal sermayeyle altı şirket arasından seçim yapın. Haberleri değerlendirin, karar verin ve yatırımcı profilinizi keşfedin.</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
     c1, c2, c3 = st.columns(3)
     c1.metric("Başlangıç sermayesi", "100.000 TL")
-    c2.metric("Hayalî şirket", "6")
+    c2.metric("Şirket", "6")
     c3.metric("Karar turu", str(len(ROUNDS)))
 
     st.info("Genel sıralama oyun bitene kadar gösterilmez. Başarı yalnızca kazanca değil, karar gerekçelerinin niteliğine de bağlıdır.")
