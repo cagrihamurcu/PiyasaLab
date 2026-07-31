@@ -329,8 +329,6 @@ def initialize_state():
         "pending_feedback": None,
         "last_round_return": 0.0,
         "show_countdown": False,
-        "reflection_history_index": None,
-        "reflection_next_page": "game",
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -488,44 +486,6 @@ def build_launch_confetti_html() -> str:
     return f'<div class="launch-confetti-overlay">{"".join(pieces)}</div>'
 
 
-def reflection_reasons(feedback: str, history_row: dict) -> list[str]:
-    asset = history_row.get("Yeni Varlık", "Nakit")
-    action = history_row.get("Karar", "")
-
-    if feedback == "profit":
-        reasons = [
-            f"{asset} fiyatı yükseldi.",
-            "Doğru zamanda doğru seçim yaptım.",
-            "Piyasa genel olarak yükseldi.",
-            "Biraz da şansım vardı.",
-        ]
-    elif feedback == "loss":
-        reasons = [
-            f"{asset} fiyatı düştü.",
-            "Haberlerdeki riski yeterince görmedim.",
-            "Piyasa genel olarak düştü.",
-            "Fiyat hareketine fazla önem verdim.",
-            "Bu tur şansım iyi gitmedi.",
-        ]
-    else:
-        reasons = [
-            "Nakitte kaldığım için etkilenmedim.",
-            "Hisse fiyatı çok değişmedi.",
-            "Kazanç ve kayıp birbirini dengeledi.",
-        ]
-
-    if action in ["Sat ve nakitte kal", "Nakitte kal"]:
-        reasons.insert(0, "Nakitte kaldığım için hisse hareketinden etkilenmedim.")
-    return list(dict.fromkeys(reasons))
-
-
-def open_reflection(history_index: int, feedback: str, round_return: float, next_page: str):
-    st.session_state.reflection_history_index = history_index
-    st.session_state.pending_feedback = feedback
-    st.session_state.last_round_return = round_return
-    st.session_state.reflection_next_page = next_page
-    st.session_state.page = "reflection"
-
 
 def execute_decision(action: str, target: str | None, reason: str):
     r_idx = st.session_state.current_round
@@ -567,8 +527,6 @@ def execute_decision(action: str, target: str | None, reason: str):
             "Puan Değerlendirmesi": score_note,
             "Tur Getirisi (%)": round(round_return, 2),
             "Portföy Değeri": round(value_after, 2),
-            "Sonuç Gerekçesi": "",
-            "Öz Değerlendirme": "",
             "Öğrenme": round_data["lesson"],
         }
     )
@@ -580,13 +538,15 @@ def execute_decision(action: str, target: str | None, reason: str):
     else:
         feedback = "neutral"
 
-    history_index = len(st.session_state.history) - 1
+    st.session_state.pending_feedback = feedback
+    st.session_state.last_round_return = round_return
     st.session_state.current_round += 1
     st.session_state.show_detail = False
-    next_page = "results" if st.session_state.current_round >= len(ROUNDS) else "game"
-    if next_page == "results":
+    if st.session_state.current_round >= len(ROUNDS):
         st.session_state.completed = True
-    open_reflection(history_index, feedback, round_return, next_page)
+        st.session_state.page = "results"
+    else:
+        st.session_state.page = "game"
     st.rerun()
 
 
@@ -892,7 +852,7 @@ with st.sidebar:
         st.caption(f"Oyuncu: **{st.session_state.nickname}**")
     st.markdown("---")
     st.write("**Amaç:** Bilgiyi sorgulamak, riski yönetmek ve duygusal kararların etkisini görmek.")
-    if st.session_state.page in ["game", "reflection", "results"]:
+    if st.session_state.page in ["game", "results"]:
         st.progress(min(st.session_state.current_round / len(ROUNDS), 1.0))
         st.caption(f"Tamamlanan tur: {st.session_state.current_round}/{len(ROUNDS)}")
         st.metric("Güncel portföy", fmt_money(portfolio_value()))
@@ -1110,6 +1070,11 @@ elif st.session_state.page == "game":
     r = ROUNDS[r_idx]
     prices = current_prices()
 
+    pending_feedback = st.session_state.get("pending_feedback")
+    if pending_feedback:
+        render_transition_feedback(pending_feedback, st.session_state.get("last_round_return", 0.0))
+        st.session_state.pending_feedback = None
+
     st.caption(f"TUR {r_idx + 1} / {len(ROUNDS)}")
     st.title(f"Tur {r_idx + 1} Piyasa Bulteni")
 
@@ -1211,6 +1176,11 @@ elif st.session_state.page == "game":
 # SONUÇLAR
 # -----------------------------------------------------------------------------
 elif st.session_state.page == "results":
+    pending_feedback = st.session_state.get("pending_feedback")
+    if pending_feedback:
+        render_transition_feedback(pending_feedback, st.session_state.get("last_round_return", 0.0))
+        st.session_state.pending_feedback = None
+
     final_value = portfolio_value(len(PRICE_PATH) - 1)
     total_return = (final_value / STARTING_CASH - 1) * 100
     decision_rows = [x for x in st.session_state.history if x["Tur"] > 0]
@@ -1263,7 +1233,7 @@ elif st.session_state.page == "results":
 
     st.markdown("### Tur bazında karar karnesi")
     history_df = pd.DataFrame(st.session_state.history)
-    display_cols = ["Tur", "Olay", "Karar", "Yeni Varlık", "Gerekçe", "Tur Getirisi (%)", "Sonuç Gerekçesi", "Öz Değerlendirme", "Portföy Değeri", "Karar Puanı", "Puan Değerlendirmesi"]
+    display_cols = ["Tur", "Olay", "Karar", "Yeni Varlık", "Gerekçe", "Tur Getirisi (%)", "Portföy Değeri", "Karar Puanı", "Puan Değerlendirmesi"]
     st.dataframe(history_df[display_cols], hide_index=True, use_container_width=True)
 
     with st.expander("Her turun öğrenme mesajını göster", expanded=True):
