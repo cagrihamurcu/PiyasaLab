@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 st.set_page_config(
-    page_title="Borsa Karar Oyunu",
+    page_title="BorsaLab",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -138,96 +138,140 @@ PRICE_PATH = [
 
 ROUNDS = [
     {
-        "title": "Güçlü haber her zaman yeterli midir?",
-        "news": "Nova Teknoloji yeni bir fabrika yatırımı açıkladı. İlk açıklamada yatırımın üretim kapasitesini önemli ölçüde artıracağı belirtildi.",
-        "detail": "Yatırımın büyük bölümü borçla finanse edilecek. Bu durum büyüme fırsatının yanında finansman riskini de artırıyor.",
-        "lesson": "Bir haberin yalnızca başlığına değil, ayrıntılarına ve finansman biçimine de bakılmalıdır.",
-        "good_reasons": [
-            "Haberin ayrıntılarını ve borçluluk etkisini birlikte değerlendiriyorum.",
-            "Risk yükseldiği için portföyümü daha dayanıklı bir şirkete taşıyorum.",
-        ],
-        "risk_reasons": [
-            "Yeni yatırım açıklandı; fiyat kesin yükselmeye devam eder.",
-            "Şirket adı ve sektörü bana güven veriyor.",
-        ],
+        "title": "Yatırım, büyüme ve finansman riski",
+        "market_note": "Şirketlere özgü ilk gelişmeler açıklandı. Haber başlıklarının yanında ayrıntıları da karşılaştırın.",
+        "company_news": {
+            "Nova Teknoloji": {"summary": "Yeni fabrika yatırımı açıkladı.", "detail": "Yatırımın büyük bölümü borçla finanse edilecek; kapasite artışı fırsat yaratırken finansman riski yükseliyor.", "signal": "Olumlu ama riskli"},
+            "Güven Bank": {"summary": "Takipteki kredi oranı sınırlı ölçüde yükseldi.", "detail": "Artış sektör ortalamasına yakın; sermaye yeterliliğinde belirgin bozulma bulunmuyor.", "signal": "Hafif olumsuz"},
+            "Yeşil Enerji": {"summary": "Yeni teşvik programına kabul edildi.", "detail": "Teşvik, iki yeni güneş enerjisi projesinin yatırım maliyetini azaltabilir.", "signal": "Olumlu"},
+            "Hızlı Havayolları": {"summary": "Yolcu doluluk oranı yatay seyretti.", "detail": "Talep korunurken yakıt maliyetleri şirket üzerinde baskı oluşturmaya devam ediyor.", "signal": "Nötr"},
+            "Bereket Gıda": {"summary": "Hammadde maliyetlerinde artış bildirdi.", "detail": "Şirket maliyet artışının bir kısmını fiyatlara yansıtmayı planlıyor.", "signal": "Hafif olumsuz"},
+            "SağlıkPlus": {"summary": "Yeni ürün için ruhsat başvurusu yaptı.", "detail": "Başvurunun sonucu henüz belli değil; onay alınırsa gelir potansiyeli oluşabilir.", "signal": "Olumlu ama belirsiz"},
+        },
+        "lesson": "Olumlu bir haber, finansman ve uygulama riskleriyle birlikte değerlendirilmelidir.",
+        "good_reasons": ["Haberin ayrıntılarını ve borçluluk etkisini birlikte değerlendiriyorum.", "Risk yükseldiği için portföyümü daha dayanıklı bir şirkete taşıyorum."],
+        "risk_reasons": ["Yeni yatırım açıklandı; fiyat kesin yükselmeye devam eder.", "Şirket adı ve sektörü bana güven veriyor."],
         "bias": "Başlık etkisi / aşırı iyimserlik",
     },
     {
-        "title": "Geçmişte çok yükselen hisse alınır mı?",
-        "news": "Nova Teknoloji son altı ayda yaklaşık %80 yükseldi ve sosyal medyada günün en çok konuşulan hissesi oldu.",
-        "detail": "Şirketin değerlemesi sektör ortalamasının oldukça üzerine çıktı. Yeni bilgi, geçmiş performansın gelecekte aynı şekilde süreceğini garanti etmiyor.",
-        "lesson": "Geçmiş fiyat artışı ve popülerlik tek başına yatırım gerekçesi değildir; sürü psikolojisine dikkat edilmelidir.",
-        "good_reasons": [
-            "Geçmiş performansın geleceği garanti etmediğini dikkate alıyorum.",
-            "Popülerlik yerine temel göstergeleri karşılaştırıyorum.",
-        ],
-        "risk_reasons": [
-            "Herkes aldığı için ben de almalıyım.",
-            "Çok yükseldiğine göre daha da yükselecektir.",
-        ],
+        "title": "Popülerlik ve geçmiş performans",
+        "market_note": "Fiyat hareketleri ve sosyal medya ilgisi öne çıkıyor. Geçmiş performansın geleceği garanti edip etmediğini düşünün.",
+        "company_news": {
+            "Nova Teknoloji": {"summary": "Son altı ayda %80 yükseldi ve sosyal medyada gündem oldu.", "detail": "Değerleme çarpanları sektör ortalamasının belirgin biçimde üzerine çıktı.", "signal": "Popüler ama pahalı"},
+            "Güven Bank": {"summary": "Dijital müşteri sayısı arttı.", "detail": "Müşteri artışı olumlu; ancak gelir etkisinin kısa vadede sınırlı kalması bekleniyor.", "signal": "Hafif olumlu"},
+            "Yeşil Enerji": {"summary": "Yeni proje için ön lisans aldı.", "detail": "Projenin finansmanı henüz kesinleşmedi.", "signal": "Olumlu ama belirsiz"},
+            "Hızlı Havayolları": {"summary": "Dış hat rezervasyonları zayıfladı.", "detail": "Mevsimsel etkiler nedeniyle talep geçici olarak geriledi.", "signal": "Hafif olumsuz"},
+            "Bereket Gıda": {"summary": "Yeni dağıtım anlaşması imzaladı.", "detail": "Anlaşmanın satışlara kademeli katkı sağlaması bekleniyor.", "signal": "Olumlu"},
+            "SağlıkPlus": {"summary": "Yeni klinik açılışı planlıyor.", "detail": "Açılış yatırımı kısa vadede maliyet yaratacak, uzun vadede kapasiteyi artırabilir.", "signal": "Dengeli"},
+        },
+        "lesson": "Geçmiş fiyat artışı ve popülerlik tek başına yatırım gerekçesi değildir.",
+        "good_reasons": ["Geçmiş performansın geleceği garanti etmediğini dikkate alıyorum.", "Popülerlik yerine temel göstergeleri karşılaştırıyorum."],
+        "risk_reasons": ["Herkes aldığı için ben de almalıyım.", "Çok yükseldiğine göre daha da yükselecektir."],
         "bias": "Sürü psikolojisi / trend takibi",
     },
     {
-        "title": "Kâr arttı ama neden?",
-        "news": "Yeşil Enerji dönem kârının %50 arttığını açıkladı. İlk bakışta şirketin operasyonel performansı çok güçlü görünüyor.",
-        "detail": "Kâr artışının önemli kısmı ana faaliyetlerden değil, tek seferlik bir gayrimenkul satışından kaynaklandı.",
-        "lesson": "Kâr rakamına tek başına bakılmaz; kârın sürdürülebilir olup olmadığı ve hangi kaynaktan geldiği sorgulanır.",
-        "good_reasons": [
-            "Kârın kaynağını ve sürdürülebilirliğini inceliyorum.",
-            "Tek seferlik gelir ile faaliyet kârını ayırıyorum.",
-        ],
-        "risk_reasons": [
-            "Kâr %50 arttıysa hisse mutlaka yükselir.",
-            "Yalnızca açıklanan kâr rakamına göre karar veriyorum.",
-        ],
+        "title": "Kârın kaynağını sorgulamak",
+        "market_note": "Şirketler dönem sonuçlarını açıklıyor. Kârın büyüklüğü kadar kaynağına ve sürdürülebilirliğine bakın.",
+        "company_news": {
+            "Nova Teknoloji": {"summary": "Siparişlerde toparlanma açıkladı.", "detail": "Sipariş artışı henüz nakit akışına tam yansımadı.", "signal": "Hafif olumlu"},
+            "Güven Bank": {"summary": "Net faiz marjı daraldı.", "detail": "Mevduat maliyetlerindeki artış kârlılığı baskılıyor.", "signal": "Olumsuz"},
+            "Yeşil Enerji": {"summary": "Dönem kârı %50 arttı.", "detail": "Artışın önemli kısmı ana faaliyetlerden değil, tek seferlik gayrimenkul satışından kaynaklandı.", "signal": "Göründüğünden zayıf"},
+            "Hızlı Havayolları": {"summary": "Kargo gelirleri sınırlı arttı.", "detail": "Yolcu gelirlerindeki zayıflığı kısmen telafi etti.", "signal": "Nötr"},
+            "Bereket Gıda": {"summary": "Faaliyet kâr marjı yükseldi.", "detail": "Maliyet kontrolü ve ürün karması iyileşmesi marjı destekledi.", "signal": "Olumlu"},
+            "SağlıkPlus": {"summary": "Tek seferlik yeniden yapılandırma gideri açıkladı.", "detail": "Gider kârı düşürdü; ana faaliyet performansı büyük ölçüde korundu.", "signal": "Geçici olumsuz"},
+        },
+        "lesson": "Kâr rakamı tek başına yeterli değildir; sürdürülebilir faaliyet kârı ile tek seferlik gelir ayrılmalıdır.",
+        "good_reasons": ["Kârın kaynağını ve sürdürülebilirliğini inceliyorum.", "Tek seferlik gelir ile faaliyet kârını ayırıyorum."],
+        "risk_reasons": ["Kâr %50 arttıysa hisse mutlaka yükselir.", "Yalnızca açıklanan kâr rakamına göre karar veriyorum."],
         "bias": "Yüzeysel analiz / çerçeveleme etkisi",
     },
     {
-        "title": "Kötü haber geldiğinde hemen satılır mı?",
-        "news": "Yakıt fiyatlarındaki sert artış nedeniyle Hızlı Havayolları hissesi baskı altında kaldı.",
-        "detail": "Şirketin yakıt maliyetlerinin önemli kısmını önceden sabitlediği ve fiyat artışına karşı koruma yaptığı açıklandı.",
-        "lesson": "İlk olumsuz haberde panikle işlem yapmak yerine şirketin riski nasıl yönettiği araştırılmalıdır.",
-        "good_reasons": [
-            "Şirketin korunma politikasını görmeden panikle karar vermiyorum.",
-            "İlk haberin tablonun tamamı olmadığını düşünüyorum.",
-        ],
-        "risk_reasons": [
-            "Fiyat düştü; daha fazla düşmeden hemen kaçmalıyım.",
-            "Kötü haber gördüğüm anda ayrıntıya bakmadan satıyorum.",
-        ],
+        "title": "Kötü haber ve risk yönetimi",
+        "market_note": "Olumsuz başlıklar piyasada hızlı tepki yaratıyor. Şirketlerin bu risklere karşı önlem alıp almadığını inceleyin.",
+        "company_news": {
+            "Nova Teknoloji": {"summary": "Tedarik gecikmesi yaşandığını duyurdu.", "detail": "Gecikmenin bir çeyrekle sınırlı kalması ve alternatif tedarikçi kullanılması bekleniyor.", "signal": "Geçici olumsuz"},
+            "Güven Bank": {"summary": "Karşılık oranını artırdı.", "detail": "Kısa vadede kârı baskılasa da bilanço dayanıklılığını güçlendirebilir.", "signal": "Temkinli olumlu"},
+            "Yeşil Enerji": {"summary": "Bir projede izin süreci uzadı.", "detail": "Diğer projeler planlandığı şekilde ilerliyor.", "signal": "Hafif olumsuz"},
+            "Hızlı Havayolları": {"summary": "Yakıt fiyatlarındaki sert artışla baskı gördü.", "detail": "Şirket yakıt maliyetlerinin önemli kısmını önceden sabitlemiş durumda.", "signal": "İlk haberden daha iyi"},
+            "Bereket Gıda": {"summary": "Savunmacı ürünlere talep arttı.", "detail": "Temel tüketim ürünleri zayıf piyasa koşullarında istikrarlı seyrediyor.", "signal": "Olumlu"},
+            "SağlıkPlus": {"summary": "Yeni geri ödeme düzenlemesinden yararlanacak.", "detail": "Düzenleme bazı tedavilerde hasta hacmini artırabilir.", "signal": "Olumlu"},
+        },
+        "lesson": "İlk olumsuz başlıkta panikle işlem yapmak yerine şirketin riski nasıl yönettiği araştırılmalıdır.",
+        "good_reasons": ["Şirketin korunma politikasını görmeden panikle karar vermiyorum.", "İlk haberin tablonun tamamı olmadığını düşünüyorum."],
+        "risk_reasons": ["Fiyat düştü; daha fazla düşmeden hemen kaçmalıyım.", "Kötü haber gördüğüm anda ayrıntıya bakmadan satıyorum."],
         "bias": "Panik satışı / kayıptan kaçınma",
     },
     {
-        "title": "Şirket iyi olsa da hisse düşebilir mi?",
-        "news": "SağlıkPlus satış ve faaliyet kârında artış bildirdi. Ancak merkez bankasının beklenmedik faiz artışı sonrası piyasanın tamamında satış başladı.",
-        "detail": "Faiz artışı, şirketlerin finansman maliyetini ve yatırımcıların hisse değerlemelerini etkileyebilir. Güçlü şirketler de genel piyasa hareketinden etkilenebilir.",
+        "title": "Faiz artışı ve piyasa riski",
+        "market_note": "Merkez bankası beklenmedik biçimde faiz artırdı. Şirket haberleri olumlu olsa bile genel piyasa etkisini hesaba katın.",
+        "company_news": {
+            "Nova Teknoloji": {"summary": "Satış hedefini korudu.", "detail": "Yüksek faiz, büyüme şirketlerinin değerlemesini ve finansman maliyetini olumsuz etkileyebilir.", "signal": "Şirket iyi, piyasa zayıf"},
+            "Güven Bank": {"summary": "Mevduat maliyetlerinde artış bekliyor.", "detail": "Faiz artışı kısa vadede marjları baskılayabilir.", "signal": "Olumsuz"},
+            "Yeşil Enerji": {"summary": "Uzun vadeli sabit fiyatlı satış sözleşmesi açıkladı.", "detail": "Sözleşme gelir görünürlüğünü artırıyor; ancak yüksek faiz değerlemeyi baskılıyor.", "signal": "Dengeli"},
+            "Hızlı Havayolları": {"summary": "Finansman giderleri artabilir.", "detail": "Yüksek borçluluk nedeniyle faiz artışına duyarlılığı yüksek.", "signal": "Olumsuz"},
+            "Bereket Gıda": {"summary": "Temel tüketim talebi korunuyor.", "detail": "Düşük borç ve istikrarlı talep şirketi görece savunmacı kılıyor.", "signal": "Görece dayanıklı"},
+            "SağlıkPlus": {"summary": "Satış ve faaliyet kârında artış açıkladı.", "detail": "Güçlü faaliyet performansına rağmen piyasa genelindeki satıştan etkilenebilir.", "signal": "Şirket iyi, piyasa zayıf"},
+        },
         "lesson": "Hisse fiyatını yalnızca şirket performansı değil, faizler ve genel ekonomik koşullar da etkiler.",
-        "good_reasons": [
-            "Şirket verileriyle birlikte genel piyasa ve faiz koşullarını değerlendiriyorum.",
-            "Piyasa riskini azaltmak için daha savunmacı bir tercih yapıyorum.",
-        ],
-        "risk_reasons": [
-            "Şirket iyi olduğu için piyasa düşüşünden etkilenmez.",
-            "Makroekonomik koşulların hisse fiyatıyla ilgisi yoktur.",
-        ],
+        "good_reasons": ["Şirket verileriyle birlikte genel piyasa ve faiz koşullarını değerlendiriyorum.", "Piyasa riskini azaltmak için daha savunmacı bir tercih yapıyorum."],
+        "risk_reasons": ["Şirket iyi olduğu için piyasa düşüşünden etkilenmez.", "Makroekonomik koşulların hisse fiyatıyla ilgisi yoktur."],
         "bias": "Şirket odaklı dar bakış / piyasa riskini ihmal",
     },
     {
-        "title": "Söylenti mi, güvenilir bilgi mi?",
-        "news": "Sosyal medyada SağlıkPlus'ın çok büyük bir kamu sözleşmesi alacağı iddia edildi. Paylaşımlar kısa sürede yayıldı.",
-        "detail": "Şirket daha sonra bu iddianın gerçeği yansıtmadığını açıkladı. Buna karşılık resmî açıklamayla yeni bir dijital sağlık ihracat anlaşması duyurdu.",
-        "lesson": "Sosyal medya söylentisi ile resmî açıklama aynı değerde değildir; bilginin kaynağı mutlaka sorgulanmalıdır.",
-        "good_reasons": [
-            "Resmî ve doğrulanabilir bilgiye göre karar veriyorum.",
-            "Söylenti teyit edilmeden işlem yapmıyorum.",
-        ],
-        "risk_reasons": [
-            "Sosyal medyada çok paylaşıldığı için bilgi doğrudur.",
-            "Başkalarından önce almak için hemen harekete geçmeliyim.",
-        ],
+        "title": "Söylenti, resmî açıklama ve beklenmeyen gelişme",
+        "market_note": "Son turda bilgi kaynakları ve beklenmeyen gelişmeler belirleyici. Söylenti ile doğrulanmış açıklamayı ayırın.",
+        "company_news": {
+            "Nova Teknoloji": {"summary": "İhracat siparişi aldığını resmen açıkladı.", "detail": "Sözleşme şirketin cirosuna anlamlı katkı sağlayabilir.", "signal": "Olumlu ve doğrulanmış"},
+            "Güven Bank": {"summary": "Düzenleyici inceleme başlatıldı.", "detail": "İncelemenin sonucu henüz bilinmiyor; belirsizlik kısa vadeli baskı yaratıyor.", "signal": "Belirsiz ve riskli"},
+            "Yeşil Enerji": {"summary": "Yurt dışı proje ortaklığı duyurdu.", "detail": "Açıklama şirketin resmî bildirim kanalı üzerinden yapıldı.", "signal": "Olumlu ve doğrulanmış"},
+            "Hızlı Havayolları": {"summary": "Yeni turizm rotaları için talep artışı bildirdi.", "detail": "Rezervasyon verileri şirket tarafından doğrulandı.", "signal": "Olumlu"},
+            "Bereket Gıda": {"summary": "Ürün geri çağırma söylentisi yayıldı.", "detail": "Şirket resmî açıklamasında iddiayı yalanladı; denetimlerde sorun bulunmadığını bildirdi.", "signal": "Söylenti doğrulanmadı"},
+            "SağlıkPlus": {"summary": "Büyük kamu sözleşmesi alacağı söylentisi yayıldı.", "detail": "Şirket söylentiyi yalanladı; buna karşılık resmî olarak dijital sağlık ihracat anlaşması açıkladı.", "signal": "Söylenti yanlış, resmî haber olumlu"},
+        },
+        "lesson": "Sosyal medya söylentisi ile resmî açıklama aynı değerde değildir; bilginin kaynağı sorgulanmalıdır.",
+        "good_reasons": ["Resmî ve doğrulanabilir bilgiye göre karar veriyorum.", "Söylenti teyit edilmeden işlem yapmıyorum."],
+        "risk_reasons": ["Sosyal medyada çok paylaşıldığı için bilgi doğrudur.", "Başkalarından önce almak için hemen harekete geçmeliyim."],
         "bias": "Söylentiye kapılma / kaçırma korkusu",
     },
 ]
+
+INITIAL_REASONS = [
+    "Satış büyümesi, kârlılık ve borçluluk göstergelerini birlikte değerlendirdim.",
+    "Şirketin mali yapısını ve borç düzeyini diğer şirketlerle karşılaştırdım.",
+    "Sektörün büyüme potansiyelini ve şirketin faaliyet alanını güçlü buldum.",
+    "Son bir yıllık fiyat hareketinin yanında temel göstergeleri de dikkate aldım.",
+    "Düşük borçluluk ve istikrarlı kârlılık nedeniyle daha güvenli buldum.",
+    "Yüksek büyüme potansiyeli için daha fazla risk almayı kabul ettim.",
+    "Yalnızca son dönemde fiyatı çok yükseldiği için seçtim.",
+    "Şirketin adı veya sektörü bana yakın geldiği için seçtim.",
+]
+
+ACTION_REASONS = {
+    "Tut": [
+        "Mevcut şirketimin haberi ve temel göstergeleri yatırımımı sürdürmek için yeterli görünüyor.",
+        "Kısa vadeli dalgalanmaya rağmen şirketin uzun vadeli görünümünün korunduğunu düşünüyorum.",
+        "Diğer şirketlerin haberleri mevcut yatırımımdan daha güçlü bir alternatif sunmuyor.",
+        "İlk olumsuz haberde panikle satış yapmak istemiyorum; ayrıntıları dikkate alıyorum.",
+        "Zararımı kabullenmek istemediğim için fiyatın mutlaka toparlanacağını düşünüyorum.",
+        "Daha önce bu hisseyi seçtiğim için kararımı değiştirmek istemiyorum.",
+    ],
+    "Sat ve nakitte kal": [
+        "Piyasa genelindeki belirsizlik nedeniyle yeni bir hisse almadan riski azaltmak istiyorum.",
+        "Mevcut şirketimin haberi olumsuz; diğer şirketlerde de yeterince güçlü ve doğrulanmış fırsat görmüyorum.",
+        "Yeni bilgi netleşene kadar nakitte beklemenin daha uygun olduğunu düşünüyorum.",
+        "Genel piyasa koşullarının tüm hisseleri baskılayabileceğini değerlendiriyorum.",
+        "Fiyat düştüğü için daha fazla kaybetme korkusuyla hemen nakde geçiyorum.",
+        "Tek bir olumsuz başlık gördüğüm için ayrıntılara bakmadan satıyorum.",
+    ],
+    "Sat ve başka hisse al": [
+        "Seçtiğim yeni şirketin haberi ve temel göstergeleri mevcut şirketimden daha güçlü görünüyor.",
+        "Mevcut şirketimde risk artarken yeni şirkette doğrulanmış ve sürdürülebilir bir gelişme bulunuyor.",
+        "Şirketleri borçluluk, kârlılık, haber kaynağı ve piyasa koşulları açısından karşılaştırdım.",
+        "Portföyümü daha dayanıklı veya daha uygun risk-getiri sunan bir şirkete taşıyorum.",
+        "Yeni hisse sosyal medyada popüler olduğu için hemen geçmek istiyorum.",
+        "Son dönemde en çok yükselen hisse olduğu için yükselmeye devam edeceğini düşünüyorum.",
+    ],
+}
 
 ALL_REASONS = [
     "Haberin ayrıntılarını ve risklerini birlikte değerlendiriyorum.",
@@ -407,7 +451,7 @@ st.markdown(
 # KENAR ÇUBUĞU
 # -----------------------------------------------------------------------------
 with st.sidebar:
-    st.title("📈 Borsa Karar Oyunu")
+    st.title("📈 BorsaLab")
     if st.session_state.nickname:
         st.caption(f"Oyuncu: **{st.session_state.nickname}**")
     st.markdown("---")
@@ -429,15 +473,15 @@ if st.session_state.page == "welcome":
     st.markdown(
         """
         <div class="hero">
-          <h1>Şans mı, Strateji mi?</h1>
-          <p>100.000 TL sanal sermayeyle altı hayalî şirket arasından seçim yapın. Haberleri değerlendirin, karar verin ve yatırımcı profilinizi keşfedin.</p>
+          <h1>BorsaLab</h1>
+          <p>100.000 TL sanal sermayeyle altı şirket arasından seçim yapın. Haberleri değerlendirin, karar verin ve yatırımcı profilinizi keşfedin.</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
     c1, c2, c3 = st.columns(3)
     c1.metric("Başlangıç sermayesi", "100.000 TL")
-    c2.metric("Hayalî şirket", "6")
+    c2.metric("Şirket", "6")
     c3.metric("Karar turu", str(len(ROUNDS)))
 
     st.info("Genel sıralama oyun bitene kadar gösterilmez. Başarı yalnızca kazanca değil, karar gerekçelerinin niteliğine de bağlıdır.")
@@ -476,7 +520,7 @@ elif st.session_state.page == "companies":
     selected = st.selectbox("Sermayenizin tamamını hangi hisseye yatıracaksınız?", names, index=None, placeholder="Bir şirket seçin")
     initial_reason = st.selectbox(
         "Bu şirketi seçmenizin temel nedeni nedir?",
-        ALL_REASONS,
+        INITIAL_REASONS,
         index=None,
         placeholder="Bir gerekçe seçin",
     )
@@ -494,7 +538,7 @@ elif st.session_state.page == "companies":
                 "Yeni Varlık": selected,
                 "Gerekçe": initial_reason,
                 "Davranışsal Risk": "İlk izlenim / şirket ve sektör tercihi",
-                "Karar Puanı": 7 if any(k in initial_reason.lower() for k in ["temel", "risk", "mali", "piyasa", "güvenilir"]) else 3,
+                "Karar Puanı": 3 if initial_reason in INITIAL_REASONS[-2:] else 8,
                 "Tur Getirisi (%)": 0.0,
                 "Portföy Değeri": STARTING_CASH,
                 "Öğrenme": "İlk seçimlerin hangi bilgiye dayandığı, sonraki kararların niteliğini etkiler.",
@@ -512,8 +556,35 @@ elif st.session_state.page == "game":
     prices = current_prices()
 
     st.caption(f"TUR {r_idx + 1} / {len(ROUNDS)}")
-    st.title(r["title"])
-    st.markdown(f'<div class="news-card"><b>📰 Piyasa haberi</b><br><br>{r["news"]}</div>', unsafe_allow_html=True)
+    st.title(f"Tur {r_idx + 1} Piyasa Bulteni")
+
+    st.markdown(
+        f'<div class="news-card"><b>📰 {r["title"]}</b><br>'
+        f'<div style="margin:.55rem 0 0 0;">{r["market_note"]}</div></div>',
+        unsafe_allow_html=True,
+    )
+
+    # Her turda altı şirketin tamamına ait haberler aynı anda ve ayrı satırlarda gösterilir.
+    news_rows = []
+    for company in COMPANIES:
+        item = r["company_news"][company]
+        news_rows.append(
+            {
+                "Şirket": f"{COMPANIES[company]['icon']} {company}",
+                "Tur haberi": item["summary"],
+                "İlk değerlendirme": item["signal"],
+            }
+        )
+    st.markdown("#### Bu turdaki tüm şirket haberleri")
+    st.dataframe(pd.DataFrame(news_rows), hide_index=True, use_container_width=True)
+    st.caption("Karar vermeden önce mevcut hissenizin yanı sıra diğer beş şirketin haberini de karşılaştırın.")
+
+    with st.expander("🔎 Haber ayrintilarini sirket bazinda incele", expanded=False):
+        for company, item in r["company_news"].items():
+            st.markdown(f"**{COMPANIES[company]['icon']} {company} — {item['summary']}**")
+            st.write(item["detail"])
+            st.caption(f"Ilk degerlendirme: {item['signal']}")
+            st.divider()
 
     st.markdown("### Mevcut durumunuz")
     m1, m2, m3, m4 = st.columns(4)
@@ -533,14 +604,6 @@ elif st.session_state.page == "game":
         )
         st.dataframe(df_prices, hide_index=True, use_container_width=True)
 
-    if not st.session_state.show_detail:
-        st.warning("Karar vermeden önce haberin ayrıntısını görmek isteyebilirsiniz. Ayrıntıyı açmak zorunlu değildir; tercihiniz yatırımcı profilinize yansır.")
-        if st.button("🔎 Haberin ayrıntısını incele"):
-            st.session_state.show_detail = True
-            st.rerun()
-    else:
-        st.info(f"**Ek bilgi:** {r['detail']}")
-
     st.markdown("### Kararınız")
     action = st.radio("Ne yapacaksınız?", ["Tut", "Sat ve nakitte kal", "Sat ve başka hisse al"], horizontal=True)
     target = None
@@ -548,8 +611,16 @@ elif st.session_state.page == "game":
         options = [x for x in COMPANIES if x != st.session_state.holding]
         target = st.selectbox("Hangi hisseye geçeceksiniz?", options, index=None, placeholder="Yeni hisseyi seçin")
 
-    round_reasons = r["good_reasons"] + r["risk_reasons"] + [x for x in ALL_REASONS if x not in r["good_reasons"] + r["risk_reasons"]]
-    reason = st.selectbox("Kararınızın temel gerekçesi", round_reasons, index=None, placeholder="Bir gerekçe seçin")
+    # Gerekçe seçenekleri verilen kararın türüne göre değişir.
+    round_reasons = ACTION_REASONS[action] + r["good_reasons"] + r["risk_reasons"]
+    round_reasons = list(dict.fromkeys(round_reasons))
+    reason = st.selectbox(
+        f"'{action}' kararınızın temel gerekçesi nedir?",
+        round_reasons,
+        index=None,
+        placeholder="Kararınıza uygun bir gerekçe seçin",
+        key=f"reason_{r_idx}_{action}",
+    )
 
     disabled = reason is None or (action == "Sat ve başka hisse al" and target is None)
     if st.button("Kararı uygula ve turu tamamla", type="primary", use_container_width=True, disabled=disabled):
@@ -619,7 +690,7 @@ elif st.session_state.page == "results":
     st.download_button(
         "📥 Karar karnesini CSV olarak indir",
         data=csv,
-        file_name=f"borsa_karar_oyunu_{st.session_state.nickname}.csv",
+        file_name=f"borsalab_{st.session_state.nickname}.csv",
         mime="text/csv",
         use_container_width=True,
     )
@@ -627,3 +698,4 @@ elif st.session_state.page == "results":
     st.markdown("---")
     st.subheader("Ana mesaj")
     st.write("Borsa yalnızca doğru hisseyi bulma oyunu değildir. Bilgiyi sorgulama, riski yönetme ve duyguları kontrol etme sürecidir.")
+
