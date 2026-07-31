@@ -163,8 +163,8 @@ ROUNDS = [
             "SağlıkPlus": {"summary": "Yeni ürün için ruhsat başvurusu yaptı.", "detail": "Başvurunun sonucu henüz belli değil; onay alınırsa gelir potansiyeli oluşabilir.", "signal": "Olumlu ama belirsiz"},
         },
         "lesson": "Olumlu bir haber, finansman ve uygulama riskleriyle birlikte değerlendirilmelidir.",
-        "good_reasons": ["Haberin ayrıntılarını ve borçluluk etkisini birlikte değerlendiriyorum.", "Risk yükseldiği için portföyümü daha dayanıklı bir şirkete taşıyorum."],
-        "risk_reasons": ["Yeni yatırım açıklandı; fiyat kesin yükselmeye devam eder.", "Şirket adı ve sektörü bana güven veriyor."],
+        "good_reasons": ["Haberin tamamına ve borca bakıyorum.", "Risk arttığı için daha güvenli bir şirkete geçiyorum."],
+        "risk_reasons": ["Yatırım haberi geldi, fiyat kesin yükselir.", "Şirketin adı bana güven veriyor."],
         "bias": "Başlık etkisi / aşırı iyimserlik",
     },
     {
@@ -179,8 +179,8 @@ ROUNDS = [
             "SağlıkPlus": {"summary": "Yeni klinik açılışı planlıyor.", "detail": "Açılış yatırımı kısa vadede maliyet yaratacak, uzun vadede kapasiteyi artırabilir.", "signal": "Dengeli"},
         },
         "lesson": "Geçmiş fiyat artışı ve popülerlik tek başına yatırım gerekçesi değildir.",
-        "good_reasons": ["Geçmiş performansın geleceği garanti etmediğini dikkate alıyorum.", "Popülerlik yerine temel göstergeleri karşılaştırıyorum."],
-        "risk_reasons": ["Herkes aldığı için ben de almalıyım.", "Çok yükseldiğine göre daha da yükselecektir."],
+        "good_reasons": ["Geçmişte yükselmesi yine yükseleceği anlamına gelmez.", "Popülerliğe değil şirket bilgilerine bakıyorum."],
+        "risk_reasons": ["Herkes alıyor, ben de almalıyım.", "Çok yükseldi, yine yükselir."],
         "bias": "Sürü psikolojisi / trend takibi",
     },
     {
@@ -195,8 +195,8 @@ ROUNDS = [
             "SağlıkPlus": {"summary": "Tek seferlik yeniden yapılandırma gideri açıkladı.", "detail": "Gider kârı düşürdü; ana faaliyet performansı büyük ölçüde korundu.", "signal": "Geçici olumsuz"},
         },
         "lesson": "Kâr rakamı tek başına yeterli değildir; sürdürülebilir faaliyet kârı ile tek seferlik gelir ayrılmalıdır.",
-        "good_reasons": ["Kârın kaynağını ve sürdürülebilirliğini inceliyorum.", "Tek seferlik gelir ile faaliyet kârını ayırıyorum."],
-        "risk_reasons": ["Kâr %50 arttıysa hisse mutlaka yükselir.", "Yalnızca açıklanan kâr rakamına göre karar veriyorum."],
+        "good_reasons": ["Kârın nereden geldiğine bakıyorum.", "Bu kârın sürekli olup olmadığını kontrol ediyorum."],
+        "risk_reasons": ["Kâr arttı, hisse kesin yükselir.", "Sadece kâr rakamına bakıyorum."],
         "bias": "Yüzeysel analiz / çerçeveleme etkisi",
     },
     {
@@ -211,8 +211,8 @@ ROUNDS = [
             "SağlıkPlus": {"summary": "Yeni geri ödeme düzenlemesinden yararlanacak.", "detail": "Düzenleme bazı tedavilerde hasta hacmini artırabilir.", "signal": "Olumlu"},
         },
         "lesson": "İlk olumsuz başlıkta panikle işlem yapmak yerine şirketin riski nasıl yönettiği araştırılmalıdır.",
-        "good_reasons": ["Şirketin korunma politikasını görmeden panikle karar vermiyorum.", "İlk haberin tablonun tamamı olmadığını düşünüyorum."],
-        "risk_reasons": ["Fiyat düştü; daha fazla düşmeden hemen kaçmalıyım.", "Kötü haber gördüğüm anda ayrıntıya bakmadan satıyorum."],
+        "good_reasons": ["Şirketin önlem alıp almadığına bakıyorum.", "İlk haberin her şeyi göstermediğini biliyorum."],
+        "risk_reasons": ["Fiyat düştü, hemen satmalıyım.", "Kötü haberi görünce hemen satıyorum."],
         "bias": "Panik satışı / kayıptan kaçınma",
     },
     {
@@ -227,8 +227,8 @@ ROUNDS = [
             "SağlıkPlus": {"summary": "Satış ve faaliyet kârında artış açıkladı.", "detail": "Güçlü faaliyet performansına rağmen piyasa genelindeki satıştan etkilenebilir.", "signal": "Şirket iyi, piyasa zayıf"},
         },
         "lesson": "Hisse fiyatını yalnızca şirket performansı değil, faizler ve genel ekonomik koşullar da etkiler.",
-        "good_reasons": ["Şirket verileriyle birlikte genel piyasa ve faiz koşullarını değerlendiriyorum.", "Piyasa riskini azaltmak için daha savunmacı bir tercih yapıyorum."],
-        "risk_reasons": ["Şirket iyi olduğu için piyasa düşüşünden etkilenmez.", "Makroekonomik koşulların hisse fiyatıyla ilgisi yoktur."],
+        "good_reasons": ["Şirketle birlikte faizlere ve piyasaya bakıyorum.", "Daha güvenli bir şirket seçiyorum."],
+        "risk_reasons": ["Şirket iyiyse piyasa düşse de etkilenmez.", "Faizlerin hisse fiyatıyla ilgisi yoktur."],
         "bias": "Şirket odaklı dar bakış / piyasa riskini ihmal",
     },
     {
@@ -243,72 +243,72 @@ ROUNDS = [
             "SağlıkPlus": {"summary": "Büyük kamu sözleşmesi alacağı söylentisi yayıldı.", "detail": "Şirket söylentiyi yalanladı; buna karşılık resmî olarak dijital sağlık ihracat anlaşması açıkladı.", "signal": "Söylenti yanlış, resmî haber olumlu"},
         },
         "lesson": "Sosyal medya söylentisi ile resmî açıklama aynı değerde değildir; bilginin kaynağı sorgulanmalıdır.",
-        "good_reasons": ["Resmî ve doğrulanabilir bilgiye göre karar veriyorum.", "Söylenti teyit edilmeden işlem yapmıyorum."],
-        "risk_reasons": ["Sosyal medyada çok paylaşıldığı için bilgi doğrudur.", "Başkalarından önce almak için hemen harekete geçmeliyim."],
+        "good_reasons": ["Resmî habere göre karar veriyorum.", "Söylenti doğru mu diye kontrol ediyorum."],
+        "risk_reasons": ["Sosyal medyada yazıyorsa doğrudur.", "Geç kalmadan hemen almalıyım."],
         "bias": "Söylentiye kapılma / kaçırma korkusu",
     },
 ]
 
 INITIAL_REASONS = [
-    "Satış büyümesi, kârlılık ve borçluluk göstergelerini birlikte değerlendirdim.",
-    "Şirketin mali yapısını ve borç düzeyini diğer şirketlerle karşılaştırdım.",
-    "Sektörün büyüme potansiyelini ve şirketin faaliyet alanını güçlü buldum.",
-    "Son bir yıllık fiyat hareketinin yanında temel göstergeleri de dikkate aldım.",
-    "Düşük borçluluk ve istikrarlı kârlılık nedeniyle daha güvenli buldum.",
-    "Yüksek büyüme potansiyeli için daha fazla risk almayı kabul ettim.",
-    "Yalnızca son dönemde fiyatı çok yükseldiği için seçtim.",
-    "Şirketin adı veya sektörü bana yakın geldiği için seçtim.",
+    "Satışları ve kârı iyi göründüğü için seçtim.",
+    "Borcu diğer şirketlere göre daha az olduğu için seçtim.",
+    "Bu sektörün geleceğinin iyi olduğunu düşünüyorum.",
+    "Fiyatı ve şirket bilgilerini birlikte değerlendirdim.",
+    "Daha güvenli göründüğü için seçtim.",
+    "Daha çok kazanmak için risk aldım.",
+    "Son dönemde çok yükseldiği için seçtim.",
+    "Şirketin adını veya sektörünü beğendim.",
 ]
 
 ACTION_REASONS = {
     "Tut": [
-        "Mevcut şirketimin haberi ve temel göstergeleri yatırımımı sürdürmek için yeterli görünüyor.",
-        "Kısa vadeli dalgalanmaya rağmen şirketin uzun vadeli görünümünün korunduğunu düşünüyorum.",
-        "Diğer şirketlerin haberleri mevcut yatırımımdan daha güçlü bir alternatif sunmuyor.",
-        "İlk olumsuz haberde panikle satış yapmak istemiyorum; ayrıntıları dikkate alıyorum.",
-        "Zararımı kabullenmek istemediğim için fiyatın mutlaka toparlanacağını düşünüyorum.",
-        "Daha önce bu hisseyi seçtiğim için kararımı değiştirmek istemiyorum.",
+        "Şirketin durumu hâlâ iyi görünüyor.",
+        "Bu düşüşün geçici olduğunu düşünüyorum.",
+        "Diğer şirketler daha iyi görünmüyor.",
+        "Tek bir kötü haberle hemen satmak istemiyorum.",
+        "Zarar ettiğim için satmak istemiyorum.",
+        "İlk seçimimi değiştirmek istemiyorum.",
     ],
     "Sat ve nakitte kal": [
-        "Piyasa genelindeki belirsizlik nedeniyle yeni bir hisse almadan riski azaltmak istiyorum.",
-        "Mevcut şirketimin haberi olumsuz; diğer şirketlerde de yeterince güçlü ve doğrulanmış fırsat görmüyorum.",
-        "Yeni bilgi netleşene kadar nakitte beklemenin daha uygun olduğunu düşünüyorum.",
-        "Genel piyasa koşullarının tüm hisseleri baskılayabileceğini değerlendiriyorum.",
-        "Fiyat düştüğü için daha fazla kaybetme korkusuyla hemen nakde geçiyorum.",
-        "Tek bir olumsuz başlık gördüğüm için ayrıntılara bakmadan satıyorum.",
+        "Piyasa karışık olduğu için nakitte bekliyorum.",
+        "Hiçbir şirket şu anda iyi görünmüyor.",
+        "Yeni haberleri beklemek istiyorum.",
+        "Piyasanın daha da düşebileceğini düşünüyorum.",
+        "Daha fazla zarar etmekten korktuğum için satıyorum.",
+        "Kötü haberi görünce hemen satıyorum.",
     ],
     "Sat ve başka hisse al": [
-        "Seçtiğim yeni şirketin haberi ve temel göstergeleri mevcut şirketimden daha güçlü görünüyor.",
-        "Mevcut şirketimde risk artarken yeni şirkette doğrulanmış ve sürdürülebilir bir gelişme bulunuyor.",
-        "Şirketleri borçluluk, kârlılık, haber kaynağı ve piyasa koşulları açısından karşılaştırdım.",
-        "Portföyümü daha dayanıklı veya daha uygun risk-getiri sunan bir şirkete taşıyorum.",
-        "Yeni hisse sosyal medyada popüler olduğu için hemen geçmek istiyorum.",
-        "Son dönemde en çok yükselen hisse olduğu için yükselmeye devam edeceğini düşünüyorum.",
+        "Yeni şirket daha iyi görünüyor.",
+        "Mevcut şirket riskli, yeni şirket daha güçlü görünüyor.",
+        "Şirketlerin haberlerini ve durumlarını karşılaştırdım.",
+        "Daha güvenli bir şirkete geçiyorum.",
+        "Sosyal medyada çok konuşulduğu için alıyorum.",
+        "Çok yükseldiği için yine yükseleceğini düşünüyorum.",
     ],
     "Nakitte kal": [
-        "Piyasa koşulları ve şirket haberleri yeterince net olmadığı için nakitte bekliyorum.",
-        "Doğrulanmış ve güçlü bir yatırım fırsatı görmediğim için risk almıyorum.",
-        "Yeni bilgiler açıklanana kadar sermayemi korumayı tercih ediyorum.",
-        "Fiyatların düşeceğini düşündüğüm için hiçbir şirketi değerlendirmeden nakitte kalıyorum.",
+        "Haberler net olmadığı için nakitte bekliyorum.",
+        "İyi bir fırsat görmediğim için risk almıyorum.",
+        "Yeni haber gelene kadar paramı koruyorum.",
+        "Fiyatların düşeceğini düşündüğüm için nakitte kalıyorum.",
     ],
     "Hisse al": [
-        "Seçtiğim şirketin haberi, temel göstergeleri ve risk-getiri görünümü uygun görünüyor.",
-        "Şirketleri karşılaştırdım ve doğrulanmış bilgiye dayalı en güçlü seçeneği belirledim.",
-        "Nakitte beklemek yerine analizime göre uygun gördüğüm şirkete yatırım yapıyorum.",
-        "Yeni hisse sosyal medyada popüler olduğu için hemen almak istiyorum.",
-        "Son dönemde en çok yükselen hisse olduğu için yükselmeye devam edeceğini düşünüyorum.",
+        "Seçtiğim şirket iyi görünüyor.",
+        "Şirketleri karşılaştırıp en iyisini seçtim.",
+        "Beklemek yerine uygun gördüğüm hisseyi alıyorum.",
+        "Sosyal medyada çok konuşulduğu için alıyorum.",
+        "Çok yükseldiği için yine yükseleceğini düşünüyorum.",
     ],
 }
 
 ALL_REASONS = [
-    "Haberin ayrıntılarını ve risklerini birlikte değerlendiriyorum.",
-    "Temel göstergeleri ve şirketin mali yapısını karşılaştırıyorum.",
-    "Genel piyasa koşullarını da dikkate alıyorum.",
-    "Resmî ve güvenilir bilgiye göre karar veriyorum.",
-    "Fiyat yükseldiği için yükselmeye devam edeceğini düşünüyorum.",
-    "Herkes aynı yönde işlem yaptığı için ben de takip ediyorum.",
-    "Zarar büyümeden panikle çıkmak istiyorum.",
-    "Şirketin adını veya sektörünü sevdiğim için seçiyorum.",
+    "Haberin tamamına bakıyorum.",
+    "Şirket bilgilerini karşılaştırıyorum.",
+    "Piyasanın genel durumuna da bakıyorum.",
+    "Güvenilir habere göre karar veriyorum.",
+    "Yükseldiği için yine yükseleceğini düşünüyorum.",
+    "Başkaları aldığı için ben de alıyorum.",
+    "Korktuğum için hemen satıyorum.",
+    "Şirketin adını veya sektörünü beğeniyorum.",
 ]
 
 # -----------------------------------------------------------------------------
@@ -329,6 +329,8 @@ def initialize_state():
         "pending_feedback": None,
         "last_round_return": 0.0,
         "show_countdown": False,
+        "reflection_history_index": None,
+        "reflection_next_page": "game",
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -358,13 +360,68 @@ def portfolio_value(price_index=None):
     return value
 
 
-def reason_quality(reason: str, round_data: dict) -> int:
+def reason_category(reason: str, round_data: dict) -> str:
     if reason in round_data["good_reasons"]:
-        return 10
+        return "good"
     if reason in round_data["risk_reasons"]:
-        return 0
-    positive_words = ["ayrıntı", "risk", "temel", "resmî", "güvenilir", "piyasa", "mali"]
-    return 7 if any(word in reason.lower() for word in positive_words) else 3
+        return "risk"
+    positive_words = ["ayrıntı", "risk", "temel", "resmî", "güvenilir", "piyasa", "mali", "karşılaştır", "güvenli"]
+    return "good" if any(word in reason.lower() for word in positive_words) else "neutral"
+
+
+def linked_decision_score(reason: str, round_data: dict, round_return: float) -> tuple[int, str]:
+    """Karar gerekçesi ile gerçekleşen sonucu birlikte puanlar."""
+    category = reason_category(reason, round_data)
+    if round_return > 0.001:
+        if category == "good":
+            return 10, "Doğru gerekçe kârla sonuçlandı."
+        if category == "risk":
+            return 5, "Kâr oluştu; ancak karar gerekçesi zayıftı. Sonuçta şans etkili olabilir."
+        return 7, "Kâr oluştu; karar kısmen doğruydu."
+    if round_return < -0.001:
+        if category == "good":
+            return 4, "Gerekçe makuldü; ancak karar bu tur zarar getirdi."
+        if category == "risk":
+            return 0, "Zayıf gerekçe zarar ile sonuçlandı."
+        return 3, "Karar yeterince güçlü değildi ve zarar oluştu."
+    if category == "good":
+        return 6, "Gerekçe doğruydu; ancak sonuç nötr kaldı."
+    if category == "risk":
+        return 2, "Gerekçe zayıftı; sonuç nötr kaldı."
+    return 5, "Karar ve sonuç nötr düzeyde kaldı."
+
+
+def initial_linked_score(reason: str, round_return: float) -> tuple[int, str]:
+    strong_reason = reason not in INITIAL_REASONS[-2:]
+    if round_return > 0.001:
+        return (10, "Bilgiye dayalı ilk seçim kâr getirdi.") if strong_reason else (5, "Kâr oluştu; ancak ilk seçim gerekçesi zayıftı.")
+    if round_return < -0.001:
+        return (4, "İlk seçim bilgiye dayalıydı; ancak zarar oluştu.") if strong_reason else (0, "Zayıf ilk seçim gerekçesi zarar ile sonuçlandı.")
+    return (6, "İlk seçim bilgiye dayalıydı; sonuç nötr kaldı.") if strong_reason else (2, "İlk seçim gerekçesi zayıftı; sonuç nötr kaldı.")
+
+
+def decision_quality_evaluation(score: float) -> str:
+    if score >= 8.5:
+        return "Kararlarınız çoğunlukla doğru gerekçelere dayandı ve kârla sonuçlandı."
+    if score >= 7.0:
+        return "Kararlarınız genel olarak başarılıydı; bazı turlarda gerekçe ve sonuç tam örtüşmedi."
+    if score >= 5.0:
+        return "Bazı doğru kararlar verdiniz; ancak kâr ve karar gerekçesi her turda uyumlu değildi."
+    if score >= 3.0:
+        return "Kararlarınızın önemli bir bölümü zarar veya zayıf gerekçelerle sonuçlandı."
+    return "Karar gerekçeleri ve sonuçlar çoğunlukla başarısızdı; haberleri daha dikkatli karşılaştırmalısınız."
+
+
+def conscious_score_evaluation(score: float) -> str:
+    if score >= 80:
+        return "Hem kazanç hem de karar kalitesi çok güçlü."
+    if score >= 65:
+        return "Kazanç ve karar kalitesi genel olarak uyumlu."
+    if score >= 50:
+        return "Orta düzeyde başarı var; daha tutarlı kararlar gerekli."
+    if score >= 35:
+        return "Kazanç ve karar kalitesi zayıf kaldı."
+    return "Kararlar ve sonuçlar birlikte değerlendirildiğinde gelişime ihtiyaç var."
 
 
 def render_transition_feedback(feedback: str, round_return: float):
@@ -431,6 +488,45 @@ def build_launch_confetti_html() -> str:
     return f'<div class="launch-confetti-overlay">{"".join(pieces)}</div>'
 
 
+def reflection_reasons(feedback: str, history_row: dict) -> list[str]:
+    asset = history_row.get("Yeni Varlık", "Nakit")
+    action = history_row.get("Karar", "")
+
+    if feedback == "profit":
+        reasons = [
+            f"{asset} fiyatı yükseldi.",
+            "Doğru zamanda doğru seçim yaptım.",
+            "Piyasa genel olarak yükseldi.",
+            "Biraz da şansım vardı.",
+        ]
+    elif feedback == "loss":
+        reasons = [
+            f"{asset} fiyatı düştü.",
+            "Haberlerdeki riski yeterince görmedim.",
+            "Piyasa genel olarak düştü.",
+            "Fiyat hareketine fazla önem verdim.",
+            "Bu tur şansım iyi gitmedi.",
+        ]
+    else:
+        reasons = [
+            "Nakitte kaldığım için etkilenmedim.",
+            "Hisse fiyatı çok değişmedi.",
+            "Kazanç ve kayıp birbirini dengeledi.",
+        ]
+
+    if action in ["Sat ve nakitte kal", "Nakitte kal"]:
+        reasons.insert(0, "Nakitte kaldığım için hisse hareketinden etkilenmedim.")
+    return list(dict.fromkeys(reasons))
+
+
+def open_reflection(history_index: int, feedback: str, round_return: float, next_page: str):
+    st.session_state.reflection_history_index = history_index
+    st.session_state.pending_feedback = feedback
+    st.session_state.last_round_return = round_return
+    st.session_state.reflection_next_page = next_page
+    st.session_state.page = "reflection"
+
+
 def execute_decision(action: str, target: str | None, reason: str):
     r_idx = st.session_state.current_round
     prices_before = PRICE_PATH[r_idx]
@@ -456,7 +552,7 @@ def execute_decision(action: str, target: str | None, reason: str):
     new_price_index = r_idx + 1
     value_after = portfolio_value(new_price_index)
     round_return = (value_after / value_before - 1) * 100 if value_before else 0
-    quality = reason_quality(reason, round_data)
+    quality, score_note = linked_decision_score(reason, round_data, round_return)
 
     st.session_state.history.append(
         {
@@ -468,25 +564,29 @@ def execute_decision(action: str, target: str | None, reason: str):
             "Gerekçe": reason,
             "Davranışsal Risk": round_data["bias"],
             "Karar Puanı": quality,
+            "Puan Değerlendirmesi": score_note,
             "Tur Getirisi (%)": round(round_return, 2),
             "Portföy Değeri": round(value_after, 2),
+            "Sonuç Gerekçesi": "",
+            "Öz Değerlendirme": "",
             "Öğrenme": round_data["lesson"],
         }
     )
 
-    st.session_state.last_round_return = round_return
     if round_return > 0.001:
-        st.session_state.pending_feedback = "profit"
+        feedback = "profit"
     elif round_return < -0.001:
-        st.session_state.pending_feedback = "loss"
+        feedback = "loss"
     else:
-        st.session_state.pending_feedback = "neutral"
+        feedback = "neutral"
 
+    history_index = len(st.session_state.history) - 1
     st.session_state.current_round += 1
     st.session_state.show_detail = False
-    if st.session_state.current_round >= len(ROUNDS):
+    next_page = "results" if st.session_state.current_round >= len(ROUNDS) else "game"
+    if next_page == "results":
         st.session_state.completed = True
-        st.session_state.page = "results"
+    open_reflection(history_index, feedback, round_return, next_page)
     st.rerun()
 
 
@@ -496,6 +596,8 @@ def create_report_pdf(
     total_return: float,
     avg_decision: float,
     total_score: float,
+    decision_eval: str,
+    conscious_eval: str,
     profile_items: list[str],
     profile_title: str,
     history: list[dict],
@@ -594,6 +696,11 @@ def create_report_pdf(
         ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
     ]))
     story.extend([summary_table, Spacer(1, 10)])
+    story.append(Paragraph("Puanların Değerlendirmesi", heading_style))
+    story.append(Paragraph(f"<b>Karar Kalitesi:</b> {decision_eval}", body_style))
+    story.append(Paragraph(f"<b>Bilinçli Yatırımcı Puanı:</b> {conscious_eval}", body_style))
+    story.append(Paragraph("Puanlama, karar gerekçesi ile o turdaki kâr veya zarar sonucunu birlikte değerlendirir.", small_style))
+    story.append(Spacer(1, 8))
 
     story.append(Paragraph("Yatırımcı Profili", heading_style))
     story.append(Paragraph(f"<b>{profile_title}</b>", body_style))
@@ -637,7 +744,13 @@ def create_report_pdf(
     story.append(Paragraph("Tur Öğrenme Mesajları", heading_style))
     for row in [x for x in history if x["Tur"] > 0]:
         story.append(Paragraph(f"<b>Tur {row['Tur']} — {row['Olay']}</b>", body_style))
-        story.append(Paragraph(f"Karar: {row['Karar']} | Gerekçe: {row['Gerekçe']}", body_style))
+        story.append(Paragraph(f"Karar: {row['Karar']} | Karar gerekçesi: {row['Gerekçe']}", body_style))
+        if row.get("Sonuç Gerekçesi"):
+            story.append(Paragraph(f"Sonuç gerekçesi: {row['Sonuç Gerekçesi']}", body_style))
+        if row.get("Öz Değerlendirme"):
+            story.append(Paragraph(f"Oyuncunun çıkardığı ders: {row['Öz Değerlendirme']}", body_style))
+        if row.get("Puan Değerlendirmesi"):
+            story.append(Paragraph(f"Puan değerlendirmesi: {row['Puan Değerlendirmesi']}", body_style))
         story.append(Paragraph(f"Temel öğrenme: {row['Öğrenme']}", body_style))
         story.append(Spacer(1, 7))
 
@@ -779,7 +892,7 @@ with st.sidebar:
         st.caption(f"Oyuncu: **{st.session_state.nickname}**")
     st.markdown("---")
     st.write("**Amaç:** Bilgiyi sorgulamak, riski yönetmek ve duygusal kararların etkisini görmek.")
-    if st.session_state.page in ["game", "results"]:
+    if st.session_state.page in ["game", "reflection", "results"]:
         st.progress(min(st.session_state.current_round / len(ROUNDS), 1.0))
         st.caption(f"Tamamlanan tur: {st.session_state.current_round}/{len(ROUNDS)}")
         st.metric("Güncel portföy", fmt_money(portfolio_value()))
@@ -905,13 +1018,8 @@ elif st.session_state.page == "companies":
         st.session_state.cash = 0.0
 
         initial_round_return = ((PRICE_PATH[0][selected] / INITIAL_PRICE) - 1) * 100
-        st.session_state.last_round_return = initial_round_return
-        if initial_round_return > 0.001:
-            st.session_state.pending_feedback = "profit"
-        elif initial_round_return < -0.001:
-            st.session_state.pending_feedback = "loss"
-        else:
-            st.session_state.pending_feedback = "neutral"
+        initial_value = STARTING_CASH * (1 + initial_round_return / 100)
+        initial_score, initial_score_note = initial_linked_score(initial_reason, initial_round_return)
 
         st.session_state.history.append(
             {
@@ -922,13 +1030,76 @@ elif st.session_state.page == "companies":
                 "Yeni Varlık": selected,
                 "Gerekçe": initial_reason,
                 "Davranışsal Risk": "İlk izlenim / şirket ve sektör tercihi",
-                "Karar Puanı": 3 if initial_reason in INITIAL_REASONS[-2:] else 8,
-                "Tur Getirisi (%)": 0.0,
-                "Portföy Değeri": STARTING_CASH,
+                "Karar Puanı": initial_score,
+                "Puan Değerlendirmesi": initial_score_note,
+                "Tur Getirisi (%)": round(initial_round_return, 2),
+                "Portföy Değeri": round(initial_value, 2),
+                "Sonuç Gerekçesi": "",
+                "Öz Değerlendirme": "",
                 "Öğrenme": "İlk seçimlerin hangi bilgiye dayandığı, sonraki kararların niteliğini etkiler.",
             }
         )
-        st.session_state.page = "game"
+        if initial_round_return > 0.001:
+            initial_feedback = "profit"
+        elif initial_round_return < -0.001:
+            initial_feedback = "loss"
+        else:
+            initial_feedback = "neutral"
+        open_reflection(len(st.session_state.history) - 1, initial_feedback, initial_round_return, "game")
+        st.rerun()
+
+# -----------------------------------------------------------------------------
+# SONUÇ VE GEREKÇELENDİRME EKRANI
+# -----------------------------------------------------------------------------
+elif st.session_state.page == "reflection":
+    history_index = st.session_state.reflection_history_index
+    row = st.session_state.history[history_index]
+    feedback = st.session_state.pending_feedback or "neutral"
+    round_return = st.session_state.last_round_return
+
+    render_transition_feedback(feedback, round_return)
+
+    if row["Tur"] == 0:
+        st.title("İlk yatırımınızın sonucu")
+        st.write("İlk kâr veya zararınızın nedenini seçin. Sonra Tur 1’e geçebilirsiniz.")
+    else:
+        st.title(f"Tur {row['Tur']} kararınızın sonucu")
+        st.write("Sonraki tura geçmeden önce kâr veya zararınızın nedenini seçin.")
+
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Karar", row["Karar"])
+    c2.metric("Yeni varlık", row["Yeni Varlık"])
+    c3.metric("Portföy değeri", fmt_money(float(row["Portföy Değeri"])), delta=f"%{round_return:.2f}")
+    st.info(f"**Karar puanı: {row['Karar Puanı']}/10** — {row.get('Puan Değerlendirmesi', '')}")
+
+    st.markdown("### Sizce bu sonuç neden oluştu?")
+    result_reason = st.selectbox(
+        "Bu sonucun nedenini seçin.",
+        reflection_reasons(feedback, row),
+        index=None,
+        placeholder="Bir sonuç gerekçesi seçin",
+        key=f"reflection_reason_{history_index}",
+    )
+    self_review = st.text_area(
+        "Bu turdan ne öğrendiniz?",
+        placeholder="Örn. Haberin tamamını okumalıyım.",
+        max_chars=150,
+        key=f"reflection_text_{history_index}",
+    )
+
+    button_label = "Gerekçeyi kaydet ve sonuçlara geç" if st.session_state.reflection_next_page == "results" else "Gerekçeyi kaydet ve sonraki aşamaya geç"
+    if st.button(
+        button_label,
+        type="primary",
+        use_container_width=True,
+        disabled=not (result_reason and self_review.strip()),
+    ):
+        st.session_state.history[history_index]["Sonuç Gerekçesi"] = result_reason
+        st.session_state.history[history_index]["Öz Değerlendirme"] = self_review.strip()
+        next_page = st.session_state.reflection_next_page
+        st.session_state.pending_feedback = None
+        st.session_state.reflection_history_index = None
+        st.session_state.page = next_page
         st.rerun()
 
 # -----------------------------------------------------------------------------
@@ -938,12 +1109,6 @@ elif st.session_state.page == "game":
     r_idx = st.session_state.current_round
     r = ROUNDS[r_idx]
     prices = current_prices()
-
-    pending_feedback = st.session_state.get("pending_feedback")
-    pending_return = st.session_state.get("last_round_return", 0.0)
-    if pending_feedback:
-        render_transition_feedback(pending_feedback, pending_return)
-        st.session_state.pending_feedback = None
 
     st.caption(f"TUR {r_idx + 1} / {len(ROUNDS)}")
     st.title(f"Tur {r_idx + 1} Piyasa Bulteni")
@@ -1046,26 +1211,17 @@ elif st.session_state.page == "game":
 # SONUÇLAR
 # -----------------------------------------------------------------------------
 elif st.session_state.page == "results":
-    pending_feedback = st.session_state.get("pending_feedback")
-    pending_return = st.session_state.get("last_round_return", 0.0)
-    if pending_feedback:
-        render_transition_feedback(pending_feedback, pending_return)
-        st.session_state.pending_feedback = None
-
     final_value = portfolio_value(len(PRICE_PATH) - 1)
     total_return = (final_value / STARTING_CASH - 1) * 100
     decision_rows = [x for x in st.session_state.history if x["Tur"] > 0]
     avg_decision = sum(x["Karar Puanı"] for x in decision_rows) / max(len(decision_rows), 1)
-    resilience = sum(
-        not any(k in x["Gerekçe"].lower() for k in ["panik", "herkes", "kesin", "hemen"])
-        for x in decision_rows
-    ) / max(len(decision_rows), 1) * 100
-
-    # Bileşik puan: getiri %50, karar niteliği %30, panik/söylenti direnci %20.
-    # Getiri bileşeni 0-100 aralığına sınırlanır: -20% => 0, +20% => 100.
+    # Karar puanı her turda gerekçe ile kâr/zarar sonucunu birlikte içerir.
+    # Bilinçli yatırımcı puanı: sonuçla uyumlu karar kalitesi %65, toplam getiri %35.
     return_score = max(0, min(100, (total_return + 20) / 40 * 100))
     decision_score = avg_decision * 10
-    total_score = 0.50 * return_score + 0.30 * decision_score + 0.20 * resilience
+    total_score = 0.65 * decision_score + 0.35 * return_score
+    decision_eval = decision_quality_evaluation(avg_decision)
+    conscious_eval = conscious_score_evaluation(total_score)
 
     st.markdown(
         f"""
@@ -1082,6 +1238,11 @@ elif st.session_state.page == "results":
     c2.metric("Toplam getiri", f"%{total_return:.2f}")
     c3.metric("Karar kalitesi", f"{avg_decision:.1f}/10")
     c4.metric("Bilinçli yatırımcı puanı", f"{total_score:.1f}/100")
+
+    st.markdown("### Puanların değerlendirmesi")
+    st.info(f"**Karar Kalitesi:** {decision_eval}")
+    st.success(f"**Bilinçli Yatırımcı Puanı:** {conscious_eval}")
+    st.caption("Karar puanı, seçilen gerekçenin doğruluğu ile o turdaki kâr/zarar sonucunu birlikte değerlendirir. Kâr getiren doğru karar en yüksek; zarar getiren zayıf karar en düşük puanı alır.")
 
     st.markdown("### Yatırımcı profiliniz")
     for item in investor_profile(decision_rows):
@@ -1102,7 +1263,7 @@ elif st.session_state.page == "results":
 
     st.markdown("### Tur bazında karar karnesi")
     history_df = pd.DataFrame(st.session_state.history)
-    display_cols = ["Tur", "Olay", "Karar", "Yeni Varlık", "Gerekçe", "Tur Getirisi (%)", "Portföy Değeri", "Karar Puanı"]
+    display_cols = ["Tur", "Olay", "Karar", "Yeni Varlık", "Gerekçe", "Tur Getirisi (%)", "Sonuç Gerekçesi", "Öz Değerlendirme", "Portföy Değeri", "Karar Puanı", "Puan Değerlendirmesi"]
     st.dataframe(history_df[display_cols], hide_index=True, use_container_width=True)
 
     with st.expander("Her turun öğrenme mesajını göster", expanded=True):
@@ -1118,6 +1279,8 @@ elif st.session_state.page == "results":
         total_return=total_return,
         avg_decision=avg_decision,
         total_score=total_score,
+        decision_eval=decision_eval,
+        conscious_eval=conscious_eval,
         profile_items=investor_profile(decision_rows),
         profile_title=profile_title,
         history=st.session_state.history,
