@@ -12,6 +12,7 @@ st.set_page_config(
 # OYUN VERİLERİ
 # -----------------------------------------------------------------------------
 STARTING_CASH = 100_000.0
+INITIAL_PRICE = 100.0
 
 COMPANIES = {
     "Nova Teknoloji": {
@@ -79,12 +80,13 @@ COMPANIES = {
 # Her satır, ilgili turun kararından SONRA oluşan fiyatları gösterir.
 PRICE_PATH = [
     {
-        "Nova Teknoloji": 100.0,
-        "Güven Bank": 100.0,
-        "Yeşil Enerji": 100.0,
-        "Hızlı Havayolları": 100.0,
-        "Bereket Gıda": 100.0,
-        "SağlıkPlus": 100.0,
+        # İlk yatırım ile Tur 1 haberleri arasındaki kısa piyasa eğilimi
+        "Nova Teknoloji": 103.0,
+        "Güven Bank": 99.0,
+        "Yeşil Enerji": 102.0,
+        "Hızlı Havayolları": 98.0,
+        "Bereket Gıda": 101.0,
+        "SağlıkPlus": 100.5,
     },
     {
         "Nova Teknoloji": 106.0,
@@ -513,7 +515,7 @@ elif st.session_state.page == "companies":
                 st.write(f"**Kârlılık:** {c['profitability']}")
                 st.write(f"**Borçluluk:** {c['debt']}")
                 st.write(f"**Son 1 yıl:** {c['year_change']}")
-                st.write("**Başlangıç fiyatı:** 100 TL")
+                st.write(f"**Başlangıç fiyatı:** {INITIAL_PRICE:.0f} TL")
                 st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("### İlk yatırım kararınız")
@@ -527,7 +529,7 @@ elif st.session_state.page == "companies":
     if st.button("100.000 TL ile yatırımı yap", type="primary", use_container_width=True, disabled=not (selected and initial_reason)):
         st.session_state.initial_company = selected
         st.session_state.holding = selected
-        st.session_state.shares = STARTING_CASH / PRICE_PATH[0][selected]
+        st.session_state.shares = STARTING_CASH / INITIAL_PRICE
         st.session_state.cash = 0.0
         st.session_state.history.append(
             {
@@ -564,6 +566,25 @@ elif st.session_state.page == "game":
         unsafe_allow_html=True,
     )
 
+    # Tur 1'e girildiğinde, ilk seçimden sonra piyasada oluşan kısa fiyat eğilimi görünür.
+    if r_idx == 0:
+        st.markdown("#### İlk işleminizden sonra oluşan fiyat eğilimi")
+        trend_rows = []
+        for company, price in prices.items():
+            change = (price / INITIAL_PRICE - 1) * 100
+            direction = "▲ Yükseliş" if change > 0 else "▼ Düşüş" if change < 0 else "— Yatay"
+            trend_rows.append(
+                {
+                    "Şirket": f"{COMPANIES[company]['icon']} {company}",
+                    "İlk alım fiyatı": f"{INITIAL_PRICE:.2f} TL",
+                    "Tur 1 başlangıç fiyatı": f"{price:.2f} TL",
+                    "Değişim": f"{change:+.1f}%",
+                    "Eğilim": direction,
+                }
+            )
+        st.dataframe(pd.DataFrame(trend_rows), hide_index=True, use_container_width=True)
+        st.caption("Bu hareket, Tur 1 haberleri açıklanmadan önce piyasada oluşan kısa dönemli fiyat eğilimidir. Kararınızı yalnızca bu harekete göre vermeyin.")
+
     # Her turda altı şirketin tamamına ait haberler aynı anda ve ayrı satırlarda gösterilir.
     news_rows = []
     for company in COMPANIES:
@@ -599,7 +620,7 @@ elif st.session_state.page == "game":
             {
                 "Şirket": list(prices.keys()),
                 "Fiyat (TL)": list(prices.values()),
-                "Başlangıca göre (%)": [round((p / 100 - 1) * 100, 1) for p in prices.values()],
+                "Başlangıca göre (%)": [round((p / INITIAL_PRICE - 1) * 100, 1) for p in prices.values()],
             }
         )
         st.dataframe(df_prices, hide_index=True, use_container_width=True)
@@ -698,4 +719,3 @@ elif st.session_state.page == "results":
     st.markdown("---")
     st.subheader("Ana mesaj")
     st.write("Borsa yalnızca doğru hisseyi bulma oyunu değildir. Bilgiyi sorgulama, riski yönetme ve duyguları kontrol etme sürecidir.")
-
