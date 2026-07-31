@@ -3,6 +3,7 @@ import pandas as pd
 from io import BytesIO
 from pathlib import Path
 import random
+import reportlab
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.pagesizes import A4, landscape
@@ -478,7 +479,11 @@ def create_report_pdf(
 
     # Türkçe karakterler için PDF içine gömülebilen bir TrueType yazı tipi kullanılır.
     # Helvetica Türkçe karakterlerin tamamını desteklemediği için sessiz geri dönüş yapılmaz.
+    # İlk seçenek ReportLab paketinin kendi içinde bulunan Vera yazı tipidir.
+    # Bu dosyalar Streamlit Cloud'da ReportLab kurulu olduğu sürece her zaman erişilebilirdir.
+    reportlab_fonts = Path(reportlab.__file__).resolve().parent / "fonts"
     font_candidates = [
+        (str(reportlab_fonts / "Vera.ttf"), str(reportlab_fonts / "VeraBd.ttf")),
         ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
         ("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf", "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf"),
         ("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf", "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf"),
@@ -492,9 +497,10 @@ def create_report_pdf(
             break
 
     if regular_path is None or bold_path is None:
+        # Bu durum ancak ReportLab kurulumu eksik veya bozuksa oluşur.
         raise RuntimeError(
-            "PDF oluşturulamadı: Türkçe karakterleri destekleyen DejaVu Sans, "
-            "Noto Sans veya Liberation Sans yazı tipi bulunamadı."
+            "PDF oluşturulamadı: ReportLab yazı tipi dosyalarına erişilemedi. "
+            "requirements.txt içinde reportlab paketinin bulunduğunu kontrol edin."
         )
 
     # Streamlit her yeniden çalıştığında aynı fontu tekrar kaydetmeye çalışmamak için kontrol edilir.
@@ -669,6 +675,23 @@ st.markdown(
     .hero {padding: 2rem; border-radius: 20px; background: linear-gradient(135deg, #0f172a, #1e3a8a); color: white; margin-bottom: 1rem;}
     .hero h1 {font-size: 2.6rem; margin-bottom: .35rem;}
     .hero p {font-size: 1.08rem; opacity: .92;}
+    .welcome-stage {position: relative; overflow: hidden; padding: 2.2rem; border-radius: 24px; background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #0ea5e9 100%); color: white; margin-bottom: 1rem; min-height: 250px; box-shadow: 0 18px 44px rgba(15, 23, 42, .22);}
+    .welcome-stage h1 {font-size: 2.8rem; margin-bottom: .45rem; position: relative; z-index: 2;}
+    .welcome-stage p {font-size: 1.07rem; max-width: 760px; opacity: .95; position: relative; z-index: 2;}
+    .welcome-badges {display: flex; gap: .55rem; flex-wrap: wrap; margin-top: 1rem; position: relative; z-index: 2;}
+    .welcome-badge {display: inline-block; padding: .42rem .85rem; border-radius: 999px; font-size: .88rem; font-weight: 600; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.18); backdrop-filter: blur(2px);}
+    .bubble-wrap {position: absolute; inset: 0; overflow: hidden; pointer-events: none;}
+    .bubble {position: absolute; bottom: -90px; border-radius: 50%; opacity: .35; filter: blur(.2px); animation: floatBubble linear infinite;}
+    .bubble::after {content: ''; position: absolute; width: 28%; height: 28%; top: 18%; left: 20%; border-radius: 50%; background: rgba(255,255,255,.35);}
+    .bubble.one {left: 5%; width: 70px; height: 70px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(59,130,246,.18)); animation-duration: 11s;}
+    .bubble.two {left: 18%; width: 44px; height: 44px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.5), rgba(34,197,94,.16)); animation-duration: 9s; animation-delay: 1.4s;}
+    .bubble.three {left: 32%; width: 92px; height: 92px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.5), rgba(245,158,11,.16)); animation-duration: 14s; animation-delay: .7s;}
+    .bubble.four {left: 52%; width: 56px; height: 56px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.48), rgba(236,72,153,.14)); animation-duration: 10s; animation-delay: 2s;}
+    .bubble.five {left: 69%; width: 78px; height: 78px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.45), rgba(168,85,247,.16)); animation-duration: 13s; animation-delay: 3s;}
+    .bubble.six {left: 84%; width: 50px; height: 50px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.5), rgba(16,185,129,.16)); animation-duration: 8.5s; animation-delay: 2.4s;}
+    .welcome-glow {position: absolute; right: -65px; top: -50px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.12); filter: blur(8px);}
+    .welcome-glow.two {left: -40px; bottom: -70px; top: auto; right: auto; width: 170px; height: 170px; background: rgba(14,165,233,.18);}
+    @keyframes floatBubble {0% {transform: translateY(0) scale(1); opacity: .10;} 20% {opacity: .28;} 60% {opacity: .38;} 100% {transform: translateY(-330px) scale(1.12); opacity: 0;}}
     .company-card {border: 1px solid rgba(128,128,128,.25); border-radius: 16px; padding: 1rem; min-height: 285px;}
     .news-card {border-left: 6px solid #f59e0b; padding: 1.2rem 1.4rem; border-radius: 12px; background: rgba(245,158,11,.10);}
     .lesson-card {border-left: 6px solid #10b981; padding: 1rem 1.2rem; border-radius: 12px; background: rgba(16,185,129,.10);}
@@ -715,9 +738,25 @@ with st.sidebar:
 if st.session_state.page == "welcome":
     st.markdown(
         """
-        <div class="hero">
-          <h1>BorsaLab</h1>
+        <div class="welcome-stage">
+          <div class="bubble-wrap">
+            <span class="bubble one"></span>
+            <span class="bubble two"></span>
+            <span class="bubble three"></span>
+            <span class="bubble four"></span>
+            <span class="bubble five"></span>
+            <span class="bubble six"></span>
+            <span class="welcome-glow"></span>
+            <span class="welcome-glow two"></span>
+          </div>
+          <h1>📈 BorsaLab</h1>
           <p>100.000 TL sanal sermayeyle altı şirket arasından seçim yapın. Haberleri değerlendirin, karar verin ve yatırımcı profilinizi keşfedin.</p>
+          <div class="welcome-badges">
+            <span class="welcome-badge">🎯 Karar ver</span>
+            <span class="welcome-badge">📰 Haberleri yorumla</span>
+            <span class="welcome-badge">💼 Portföyünü yönet</span>
+            <span class="welcome-badge">📊 Sonucunu gör</span>
+          </div>
         </div>
         """,
         unsafe_allow_html=True,
