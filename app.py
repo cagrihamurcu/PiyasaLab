@@ -850,13 +850,13 @@ if st.session_state.page == "welcome":
                 f'<div class="countdown-screen"><div class="countdown-number">{number}</div><div class="countdown-text">BorsaLab başlıyor...</div><div class="countdown-subtext">Piyasayı oku · Karar ver · Sonucunu gör</div></div>',
                 unsafe_allow_html=True,
             )
-            time.sleep(0.95)
+            time.sleep(1.15)
         launch_confetti = build_launch_confetti_html()
         placeholder.markdown(
             f'<div class="countdown-screen"><div class="launch-flash"></div><div class="countdown-number go-burst">GO!</div><div class="countdown-text">Karar zamanı</div><div class="countdown-subtext">Piyasalar açılıyor...</div></div>{launch_confetti}',
             unsafe_allow_html=True,
         )
-        time.sleep(1.9)
+        time.sleep(2.6)
         st.session_state.show_countdown = False
         st.session_state.page = "companies"
         st.rerun()
