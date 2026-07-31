@@ -1005,61 +1005,9 @@ elif st.session_state.page == "companies":
             initial_feedback = "loss"
         else:
             initial_feedback = "neutral"
-        open_reflection(len(st.session_state.history) - 1, initial_feedback, initial_round_return, "game")
-        st.rerun()
-
-# -----------------------------------------------------------------------------
-# SONUÇ VE GEREKÇELENDİRME EKRANI
-# -----------------------------------------------------------------------------
-elif st.session_state.page == "reflection":
-    history_index = st.session_state.reflection_history_index
-    row = st.session_state.history[history_index]
-    feedback = st.session_state.pending_feedback or "neutral"
-    round_return = st.session_state.last_round_return
-
-    render_transition_feedback(feedback, round_return)
-
-    if row["Tur"] == 0:
-        st.title("İlk yatırımınızın sonucu")
-        st.write("İlk kâr veya zararınızın nedenini seçin. Sonra Tur 1’e geçebilirsiniz.")
-    else:
-        st.title(f"Tur {row['Tur']} kararınızın sonucu")
-        st.write("Sonraki tura geçmeden önce kâr veya zararınızın nedenini seçin.")
-
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Karar", row["Karar"])
-    c2.metric("Yeni varlık", row["Yeni Varlık"])
-    c3.metric("Portföy değeri", fmt_money(float(row["Portföy Değeri"])), delta=f"%{round_return:.2f}")
-    st.info(f"**Karar puanı: {row['Karar Puanı']}/10** — {row.get('Puan Değerlendirmesi', '')}")
-
-    st.markdown("### Sizce bu sonuç neden oluştu?")
-    result_reason = st.selectbox(
-        "Bu sonucun nedenini seçin.",
-        reflection_reasons(feedback, row),
-        index=None,
-        placeholder="Bir sonuç gerekçesi seçin",
-        key=f"reflection_reason_{history_index}",
-    )
-    self_review = st.text_area(
-        "Bu turdan ne öğrendiniz?",
-        placeholder="Örn. Haberin tamamını okumalıyım.",
-        max_chars=150,
-        key=f"reflection_text_{history_index}",
-    )
-
-    button_label = "Gerekçeyi kaydet ve sonuçlara geç" if st.session_state.reflection_next_page == "results" else "Gerekçeyi kaydet ve sonraki aşamaya geç"
-    if st.button(
-        button_label,
-        type="primary",
-        use_container_width=True,
-        disabled=not (result_reason and self_review.strip()),
-    ):
-        st.session_state.history[history_index]["Sonuç Gerekçesi"] = result_reason
-        st.session_state.history[history_index]["Öz Değerlendirme"] = self_review.strip()
-        next_page = st.session_state.reflection_next_page
-        st.session_state.pending_feedback = None
-        st.session_state.reflection_history_index = None
-        st.session_state.page = next_page
+        st.session_state.pending_feedback = initial_feedback
+        st.session_state.last_round_return = initial_round_return
+        st.session_state.page = "game"
         st.rerun()
 
 # -----------------------------------------------------------------------------
