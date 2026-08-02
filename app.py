@@ -30,61 +30,67 @@ COMPANIES = {
     "Nova Teknoloji": {
         "symbol": "NOVA",
         "sector": "Teknoloji",
-        "sales": "+%24",
-        "profitability": "Yüksek fakat dalgalı",
-        "debt": "Yüksek",
-        "year_change": "+%68",
-        "description": "Yapay zekâ ve kurumsal yazılım çözümleri geliştiren hızlı büyüyen bir şirket.",
+        "sales_label": "Satışları",
+        "sales": "%24 arttı.",
+        "profitability": "Yüksek, ancak sık değişiyor.",
+        "debt": "Fazla.",
+        "year_change": "%68 arttı.",
+        "description": "Yapay zekâ ve bilgisayar programları geliştiriyor. Hızla büyüyor.",
         "icon": "💻",
     },
     "Güven Bank": {
         "symbol": "GUVEN",
         "sector": "Bankacılık",
-        "sales": "+%12",
-        "profitability": "İstikrarlı",
-        "debt": "Sektör normlarında",
-        "year_change": "+%18",
-        "description": "Geniş müşteri tabanına sahip, geleneksel ve dijital bankacılık hizmetleri sunan bir banka.",
+        "sales_label": "Gelirleri",
+        "sales": "%12 arttı.",
+        "profitability": "Düzenli.",
+        "debt": "Bankalar için normal düzeyde.",
+        "year_change": "%18 arttı.",
+        "description": "Çok sayıda müşteriye şubelerden ve internetten bankacılık hizmeti veriyor.",
         "icon": "🏦",
     },
     "Yeşil Enerji": {
         "symbol": "YESIL",
-        "sector": "Yenilenebilir Enerji",
-        "sales": "+%31",
-        "profitability": "Orta ve yükseliyor",
-        "debt": "Orta",
-        "year_change": "+%42",
-        "description": "Güneş ve rüzgâr enerjisi yatırımları bulunan büyüme odaklı bir enerji şirketi.",
+        "sector": "Güneş ve Rüzgâr Enerjisi",
+        "sales_label": "Satışları",
+        "sales": "%31 arttı.",
+        "profitability": "Orta düzeyde ve artıyor.",
+        "debt": "Orta düzeyde.",
+        "year_change": "%42 arttı.",
+        "description": "Güneşten ve rüzgârdan elektrik üretiyor. Yeni projelerle büyümek istiyor.",
         "icon": "🌱",
     },
     "Hızlı Havayolları": {
         "symbol": "HIZLI",
-        "sector": "Havacılık",
-        "sales": "+%20",
-        "profitability": "Yakıt maliyetlerine duyarlı",
-        "debt": "Yüksek",
-        "year_change": "+%9",
-        "description": "İç ve dış hatlarda faaliyet gösteren, maliyetlere duyarlı bir havayolu şirketi.",
+        "sector": "Havayolu",
+        "sales_label": "Satışları",
+        "sales": "%20 arttı.",
+        "profitability": "Orta düzeyde. Yakıt fiyatlarından kolayca etkileniyor.",
+        "debt": "Fazla.",
+        "year_change": "%9 arttı.",
+        "description": "Yurt içine ve yurt dışına yolcu taşıyor. Yakıt fiyatları kazancını çok etkiliyor.",
         "icon": "✈️",
     },
     "Bereket Gıda": {
         "symbol": "BRKT",
         "sector": "Gıda",
-        "sales": "+%8",
-        "profitability": "İstikrarlı",
-        "debt": "Düşük",
-        "year_change": "+%14",
-        "description": "Temel tüketim ürünleri üreten, savunmacı özellikleri güçlü bir gıda şirketi.",
+        "sales_label": "Satışları",
+        "sales": "%8 arttı.",
+        "profitability": "Düzenli.",
+        "debt": "Az.",
+        "year_change": "%14 arttı.",
+        "description": "İnsanların her gün kullandığı temel gıda ürünlerini üretiyor.",
         "icon": "🌾",
     },
     "SağlıkPlus": {
         "symbol": "SPLUS",
         "sector": "Sağlık",
-        "sales": "+%16",
-        "profitability": "Yüksek",
-        "debt": "Düşük-Orta",
-        "year_change": "+%26",
-        "description": "Özel hastane ve dijital sağlık hizmetleri sunan istikrarlı bir sağlık şirketi.",
+        "sales_label": "Satışları",
+        "sales": "%16 arttı.",
+        "profitability": "Yüksek.",
+        "debt": "Çok yüksek değil.",
+        "year_change": "%26 arttı.",
+        "description": "Hastane ve internet üzerinden sağlık hizmeti veriyor.",
         "icon": "🏥",
     },
 }
@@ -944,7 +950,7 @@ if st.session_state.page == "welcome":
 # -----------------------------------------------------------------------------
 elif st.session_state.page == "companies":
     st.title("1. Şirketleri Tanıyın")
-    st.write("Aşağıdaki bilgileri karşılaştırın. Başlangıçta sermayenizin tamamını yalnızca bir şirkete yatıracaksınız.")
+    st.write("Şirketleri inceleyin ve karşılaştırın. Başlangıçta 100.000 TL’nizin tamamıyla bir şirketin hissesini alacaksınız.")
 
     names = list(COMPANIES.keys())
     for row_start in range(0, len(names), 3):
@@ -954,12 +960,12 @@ elif st.session_state.page == "companies":
             with col:
                 st.subheader(f"{c['icon']} {name}")
                 st.caption(f"{c['symbol']} · {c['sector']}")
-                st.write(c["description"])
-                st.write(f"**Satış değişimi:** {c['sales']}")
-                st.write(f"**Kârlılık:** {c['profitability']}")
-                st.write(f"**Borçluluk:** {c['debt']}")
-                st.write(f"**Son 1 yıl:** {c['year_change']}")
-                st.write(f"**Başlangıç fiyatı:** {INITIAL_PRICE:.0f} TL")
+                st.write(f"**Ne iş yapıyor?** {c['description']}")
+                st.write(f"**{c['sales_label']}:** {c['sales']}")
+                st.write(f"**Kazancı:** {c['profitability']}")
+                st.write(f"**Borcu:** {c['debt']}")
+                st.write(f"**Hisse fiyatı:** Son bir yılda {c['year_change']}")
+                st.write(f"**Bugünkü fiyatı:** {INITIAL_PRICE:.0f} TL")
 
     st.markdown("### İlk yatırım kararınız")
     selected = st.selectbox("Sermayenizin tamamını hangi hisseye yatıracaksınız?", names, index=None, placeholder="Bir şirket seçin")
